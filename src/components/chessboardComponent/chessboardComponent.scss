@@ -1,0 +1,55 @@
+.chessboard {
+
+    display: inline-block;
+    border: solid 5px black;
+
+    &__row {
+        display: flex;
+    }
+
+    &__field {
+        width: 50px;
+        height: 50px;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &--dark {
+            background-color: black;
+        }
+
+        &--light {
+            background-color: white;
+        }
+
+        &--active {
+            border: solid 3px red;
+        }
+
+        &--clickable {
+            &:hover {
+                background-color: grey;
+            }
+        }
+
+    }
+
+    &__figure {
+        width: 65%;
+        height: 65%;
+
+        &.white {
+            background-color: lighten(grey,30%)
+        }
+
+        &.black {
+            background-color: darken(grey,30%)
+        }
+
+        &.pawn {
+            border-radius: 50%;
+        }
+    }
+
+}
