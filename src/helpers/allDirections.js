@@ -1,0 +1,1 @@
+export const allDirections = [ [ -1, 1], [ 1, 1], [ -1, -1], [ 1, -1] ];

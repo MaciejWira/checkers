@@ -1,5 +1,7 @@
 import { findField } from './../../functions/findField';
 import Figure from './../Figure';
+import { initialSet } from './../../helpers/initialSet';
+import Field from './../Field';
 
 export const updateStatus = (id, actionType, _this) => {
 
@@ -14,7 +16,6 @@ export const updateStatus = (id, actionType, _this) => {
         
         // for disactivating activeField
         else if ( actionType === 'deselect' ) {
-            console.log('heee');
             _this.activeFieldId = null;
         } 
         
@@ -23,18 +24,28 @@ export const updateStatus = (id, actionType, _this) => {
                 return row.map( field => {
                     if ( field.id === id ){
                         const activeField = findField(_this.activeFieldId, _this.fields);
-                        let figureCode = activeField.figure.figureCode;
+                        let figure = activeField.figure.figure;
                         if ( 
-                            ( activeField.figure.direction === 'down' && field.coors.y === 1 ) 
-                            || ( activeField.figure.direction === 'up' && field.coors.y === 8 ) 
-                            ) figureCode = `${activeField.figure.team}-queen`;
-                        console.log(field.coors);
-                        return { 
-                            ...field, 
-                            figure: new Figure( figureCode, field.coors) 
-                        };
+                            ( activeField.figure.direction === -1 && field.coors.y === 1 ) 
+                            || ( activeField.figure.direction === 1 && field.coors.y === initialSet.length ) 
+                            ) figure = { 
+                                team: activeField.figure.team, direction: activeField.figure.team, type: 'queen'
+                            };
+                        return new Field(
+                            new Figure( figure, field.coors),
+                            field.type,
+                            field.coors,
+                            field.name,
+                        );
                     }
-                    else if ( field.id === _this.activeFieldId ) return { ...field, figure: null }
+                    else if ( field.id === _this.activeFieldId ){
+                        return new Field(
+                            null,
+                            field.type,
+                            field.coors,
+                            field.name,
+                        )
+                    }
                     else return field;
                 })
             });

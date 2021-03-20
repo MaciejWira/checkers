@@ -1,30 +1,19 @@
 import './chessboardComponent.scss'; 
-import { checkRange } from './helpers/checkRange';
 import { findField } from './../../functions/findField';
-import { rangeModifier } from './helpers/rangeModifier';
 
 // component for rendering chessboard object
 const chessboardComponent = (chessboard, stage) => {
 
     const activeField = findField(chessboard.activeFieldId, chessboard.fields);
-    // modify range in terms of figure capturing possibility
-    let _range = activeField ? rangeModifier(activeField, chessboard) : null;
 
     const rows = chessboard.fields.map( row => {
 
         // set DOM element for each field
         const _fields = row.map( field => {
-            
-            const classNames = [ "chessboard__field", `chessboard__field--${field.type}` ];
-            let actionType = '';
 
-            if ( field.figure && field.figure?.team === chessboard.status.team ){
-                actionType = 'select';
-                if ( chessboard.activeFieldId === field.id ) actionType = 'deselect';
-            } else if ( activeField && checkRange( activeField, field, _range) ){
-                actionType = 'move';
-                if ( activeField.figure.team === field.figure?.team ) actionType = 'select';
-            }
+            const classNames = [ "chessboard__field", `chessboard__field--${field.type}` ];
+
+            let actionType = field.actionType( activeField, chessboard);
 
             if ( actionType ) classNames.push( "js-clickable chessboard__field--clickable" );
             if ( chessboard.activeFieldId === field.id ) classNames.push( "chessboard__field--active" );
@@ -41,7 +30,7 @@ const chessboardComponent = (chessboard, stage) => {
                     data-name="${field.name}"
                     data-coors-x="${field.coors.x}"
                     data-coors-y="${field.coors.y}"
-                    data-range="${field.figure ? JSON.stringify(_range) : "[]"}"
+                    data-range="${field.figure ? JSON.stringify(chessboard.range) : "[]"}"
                     data-action="${actionType}"
                     class="${classNames.join(" ")}">
                     ${figure}
@@ -62,6 +51,7 @@ const chessboardComponent = (chessboard, stage) => {
         .forEach( field => {
             field.addEventListener('click', () => {
                 chessboard.updateStatus( parseInt(field.getAttribute('data-id')), field.getAttribute('data-action') );
+                chessboard.setRange();
                 chessboardComponent(chessboard, stage);
             });
         });

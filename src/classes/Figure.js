@@ -1,35 +1,35 @@
+import Vec from "./Vec";
+import { allDirections } from './../helpers/allDirections';
+import { idFromCoors } from './../helpers/idFromCoors';
+
 export default class Figure {
 
-    constructor(figureCode, coors){
-        this.figureCode = figureCode;
-        const figureDetails = figureCode.split("-");
-        const [ team, type, direction ] = figureDetails;
+    constructor( figure, coors ){
+        this.figure = figure;
+        const { team, type, direction } = figure;
         this.team = team;
         this.type = type;
-        this.direction = direction;
 
-        const directionFactor = direction === 'down' ? -1 : 1;
         const { x, y } = coors;
-        this.range = null;
+
         if ( type === 'pawn' ){
-            const range = [
-                [ x - 1, y + directionFactor ],
-                [ x + 1, y + directionFactor ]
-            ];
-            this.range = range
-                            .filter( coors => {
-                                if (
-                                    coors[0] >= 1 && coors[0] <= 8
-                                    && coors[1] >= 1 && coors[1] <= 8
-                                ){
-                                    return true;
-                                } else return false
-                            })
-                            .map( coors => {
-                                // for easier injecting to html
-                                return parseInt(coors.join(""))
-                            });
-        }
+            this.range = new Vec( x, y, 1, this.direction );
+            this.direction = direction;
+        };
+
+        if ( type === 'queen' ){
+            this.range = new Vec( x, y, 8, this.direction );
+        };
+    }
+
+    get rangeFields(){
+        return allDirections
+                    .map( direction => {
+                        const vec = this.range.move( direction );
+                        if ( vec ) return idFromCoors(vec.x, vec.y);
+                        else return null
+                    })
+                    .filter( fieldId => fieldId );
     }
 
 }
