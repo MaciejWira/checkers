@@ -16,7 +16,8 @@ const chessboardComponent = (chessboard, stage) => {
             const [ actionType, capture ] = field.actionType( activeField, chessboard);
 
             if ( actionType ) classNames.push( "js-clickable chessboard__field--clickable" );
-            if ( chessboard.activeFieldId === field.id ) classNames.push( "chessboard__field--active" );
+            if ( chessboard.activeFieldId === field.id ) classNames.push( "chessboard__field--highlighted" );
+            if ( chessboard.lastMove.includes(field.id) ) classNames.push( "chessboard__field--highlighted" );
 
             const figure = !field.figure ? '' 
                             : 

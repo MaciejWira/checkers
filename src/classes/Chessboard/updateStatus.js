@@ -24,15 +24,14 @@ export const updateStatus = (id, actionType, captureId, _this) => {
         
         else if ( actionType === 'move' ) {
             moveAction(id, _this);
-        }
+        };
 
     } 
 
 }
 
 function moveAction(id, _this, captureId){
-    console.log(captureId);
-    console.log(id);
+
     const updatedFields = _this.fields.map( row => {
         return row.map( field => {
             if ( field.id === id ){
@@ -62,9 +61,11 @@ function moveAction(id, _this, captureId){
             else return field;
         })
     });
+
     _this.moveRange = [];
     _this.captureRange = [];
     _this.fields = updatedFields;
+    _this.lastMove = [ id, _this.activeFieldId ];
     _this.activeFieldId = null;
     _this.status.team = _this.status.team === 'white' ? 'black' : 'white';
 }

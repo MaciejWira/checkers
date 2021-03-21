@@ -31,6 +31,7 @@ export default class Chessboard {
         this.activeFieldId = null;
         this.moveRange = [];
         this.captureRange = [];
+        this.lastMove = [];
     };
 
     updateStatus(id, actionType, capture){
