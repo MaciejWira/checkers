@@ -13,7 +13,7 @@ const chessboardComponent = (chessboard, stage) => {
 
             const classNames = [ "chessboard__field", `chessboard__field--${field.type}` ];
 
-            let actionType = field.actionType( activeField, chessboard);
+            const [ actionType, capture ] = field.actionType( activeField, chessboard);
 
             if ( actionType ) classNames.push( "js-clickable chessboard__field--clickable" );
             if ( chessboard.activeFieldId === field.id ) classNames.push( "chessboard__field--active" );
@@ -30,8 +30,9 @@ const chessboardComponent = (chessboard, stage) => {
                     data-name="${field.name}"
                     data-coors-x="${field.coors.x}"
                     data-coors-y="${field.coors.y}"
-                    data-range="${field.figure ? JSON.stringify(chessboard.range) : "[]"}"
-                    data-action="${actionType}"
+                    data-range="${field.figure ? JSON.stringify(chessboard.moveRange) : "[]"}"
+                    data-action="${actionType ? actionType : ""}"
+                    data-capture="${capture ? capture : ""}"
                     class="${classNames.join(" ")}">
                     ${figure}
                 </div>`;
@@ -50,8 +51,12 @@ const chessboardComponent = (chessboard, stage) => {
     [...document.querySelectorAll('.js-clickable')]
         .forEach( field => {
             field.addEventListener('click', () => {
-                chessboard.updateStatus( parseInt(field.getAttribute('data-id')), field.getAttribute('data-action') );
-                chessboard.setRange();
+                chessboard.updateStatus( 
+                    parseInt(field.getAttribute('data-id')), 
+                    field.getAttribute('data-action'),
+                    parseInt(field.getAttribute('data-capture')),
+                    );
+                chessboard.setRanges();
                 chessboardComponent(chessboard, stage);
             });
         });

@@ -3,11 +3,14 @@ import Figure from './../Figure';
 import { initialSet } from './../../helpers/initialSet';
 import Field from './../Field';
 
-export const updateStatus = (id, actionType, _this) => {
+export const updateStatus = (id, actionType, captureId, _this) => {
 
-    const status = _this.status;
+    if ( _this.status.game === 'on' ){
 
-    if ( status.game === 'on' ){
+        // capture
+        if ( actionType === 'capture' && captureId ){
+            moveAction(id, _this, captureId);
+        } 
         
         // field with a figure
         if ( actionType === 'select' ){
@@ -20,40 +23,48 @@ export const updateStatus = (id, actionType, _this) => {
         } 
         
         else if ( actionType === 'move' ) {
-            const updatedFields = _this.fields.map( row => {
-                return row.map( field => {
-                    if ( field.id === id ){
-                        const activeField = findField(_this.activeFieldId, _this.fields);
-                        let figure = activeField.figure.figure;
-                        if ( 
-                            ( activeField.figure.direction === -1 && field.coors.y === 1 ) 
-                            || ( activeField.figure.direction === 1 && field.coors.y === initialSet.length ) 
-                            ) figure = { 
-                                team: activeField.figure.team, direction: activeField.figure.team, type: 'queen'
-                            };
-                        return new Field(
-                            new Figure( figure, field.coors),
-                            field.type,
-                            field.coors,
-                            field.name,
-                        );
-                    }
-                    else if ( field.id === _this.activeFieldId ){
-                        return new Field(
-                            null,
-                            field.type,
-                            field.coors,
-                            field.name,
-                        )
-                    }
-                    else return field;
-                })
-            });
-            _this.fields = updatedFields;
-            _this.activeFieldId = null;
-            status.team = status.team === 'white' ? 'black' : 'white';
+            moveAction(id, _this);
         }
 
     } 
 
+}
+
+function moveAction(id, _this, captureId){
+    console.log(captureId);
+    console.log(id);
+    const updatedFields = _this.fields.map( row => {
+        return row.map( field => {
+            if ( field.id === id ){
+                const activeField = findField(_this.activeFieldId, _this.fields);
+                let figure = activeField.figure.figure;
+                if ( 
+                    ( activeField.figure.direction === -1 && field.coors.y === 1 ) 
+                    || ( activeField.figure.direction === 1 && field.coors.y === initialSet.length ) 
+                    ) figure = { 
+                        team: activeField.figure.team, direction: activeField.figure.team, type: 'queen'
+                    };
+                return new Field(
+                    new Figure( figure, field.coors),
+                    field.type,
+                    field.coors,
+                    field.name,
+                );
+            }
+            else if ( field.id === _this.activeFieldId || field.id === captureId ){
+                return new Field(
+                    null,
+                    field.type,
+                    field.coors,
+                    field.name,
+                )
+            }
+            else return field;
+        })
+    });
+    _this.moveRange = [];
+    _this.captureRange = [];
+    _this.fields = updatedFields;
+    _this.activeFieldId = null;
+    _this.status.team = _this.status.team === 'white' ? 'black' : 'white';
 }

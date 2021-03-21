@@ -1,5 +1,6 @@
 import Figure from './Figure';
 import { idFromCoors } from './../helpers/idFromCoors';
+import { findField } from './../functions/findField';
 
 export default class Field {
 
@@ -11,30 +12,37 @@ export default class Field {
         this.name = name;
     };
 
+    fieldFromVec( direction, fields ){
+        const vec = this.figure.range.move( direction );
+        if ( !vec ) return null;
+        return findField( idFromCoors( vec.x, vec.y ), fields );
+    }
+
     actionType( activeField, chessboard ){
-        // select / deselect
-        if ( this.figure && this.figure?.team === chessboard.status.team ){
-            if ( chessboard.activeFieldId === this.id ) return 'deselect';
-            return 'select';
-        } 
+
+        // capture
+        if ( chessboard.checkCaptureRange(this.id) ){
+            return ['capture', chessboard.checkCaptureRange(this.id)];
+        };
+
+        // deselect
+        if ( this.id === chessboard.activeFieldId ) return ['deselect'];
+
+        // select
+        if ( this.figure?.team === chessboard.status.team ) return ['select'];
         
         // move
-        else if ( activeField && this.checkRange( activeField, chessboard.range) ){
-            if ( activeField.figure.team === this.figure?.team ) return 'select';
-            return 'move';
+        else if ( activeField && this.checkRange( activeField, chessboard.moveRange) ){
+            return ['move'];
         }
+
+        else return [];
     }
 
     checkRange( activeField, range ){
 
-        if ( !range || !activeField ) return false;
+        if ( !activeField || !range.length  ) return false;
     
-        // disable range field if there is a figure from the same team
-        if ( this.figure?.team === activeField.figure.team ) return false;
-    
-        // to disable selection
-        if ( this.id === activeField.id ) return true;
-        
         // standard move in basic range
         if ( range.includes(this.id) ){
             return true;
