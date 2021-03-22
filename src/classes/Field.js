@@ -1,22 +1,17 @@
 import Figure from './Figure';
 import { idFromCoors } from './../helpers/idFromCoors';
 import { findField } from './../functions/findField';
+import Vec from './Vec';
 
 export default class Field {
 
     constructor( figure, type, coors, name ){
         this.id = idFromCoors(coors.x, coors.y);
-        this.figure = figure ? new Figure(figure, coors) : null;
+        this.vec = new Vec( coors.x, coors.y );
+        this.figure = figure ? new Figure(figure, this.vec) : null;
         this.type = type;
-        this.coors = coors;
         this.name = name;
     };
-
-    fieldFromVec( direction, fields ){
-        const vec = this.figure.range.move( direction );
-        if ( !vec ) return null;
-        return findField( idFromCoors( vec.x, vec.y ), fields );
-    }
 
     actionType( activeField, chessboard ){
 

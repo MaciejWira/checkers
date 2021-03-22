@@ -1,6 +1,6 @@
 // returns field object given the id
 
-export const findField = (id, fields) => {
+export const findField = (id, fields = []) => {
     let field = null;
     fields.forEach( row => {
         row.forEach( _field => {

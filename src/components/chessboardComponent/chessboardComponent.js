@@ -29,8 +29,8 @@ const chessboardComponent = (chessboard, stage) => {
                 <div 
                     data-id="${field.id}"
                     data-name="${field.name}"
-                    data-coors-x="${field.coors.x}"
-                    data-coors-y="${field.coors.y}"
+                    data-coors-x="${field.vec.x}"
+                    data-coors-y="${field.vec.y}"
                     data-range="${field.figure ? JSON.stringify(chessboard.moveRange) : "[]"}"
                     data-action="${actionType ? actionType : ""}"
                     data-capture="${capture ? capture : ""}"

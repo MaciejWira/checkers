@@ -1,7 +1,7 @@
 import { findField } from './../../functions/findField';
 import Figure from './../Figure';
-import { initialSet } from './../../helpers/initialSet';
 import Field from './../Field';
+import { chessboardSet } from './chessboardSettings';
 
 export const updateStatus = (id, actionType, captureId, _this) => {
 
@@ -38,15 +38,15 @@ function moveAction(id, _this, captureId){
                 const activeField = findField(_this.activeFieldId, _this.fields);
                 let figure = activeField.figure.figure;
                 if ( 
-                    ( activeField.figure.direction === -1 && field.coors.y === 1 ) 
-                    || ( activeField.figure.direction === 1 && field.coors.y === initialSet.length ) 
+                    ( activeField.figure.direction === -1 && field.vec.y === 1 ) 
+                    || ( activeField.figure.direction === 1 && field.vec.y === chessboardSet.length ) 
                     ) figure = { 
                         team: activeField.figure.team, direction: activeField.figure.team, type: 'queen'
                     };
                 return new Field(
-                    new Figure( figure, field.coors),
+                    new Figure( figure, field.vec),
                     field.type,
-                    field.coors,
+                    field.vec,
                     field.name,
                 );
             }
@@ -54,7 +54,7 @@ function moveAction(id, _this, captureId){
                 return new Field(
                     null,
                     field.type,
-                    field.coors,
+                    field.vec,
                     field.name,
                 )
             }

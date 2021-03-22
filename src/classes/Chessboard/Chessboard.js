@@ -1,7 +1,7 @@
 import { updateStatus } from './updateStatus';
 import Field from '../Field';
 import { findField } from './../../functions/findField';
-import { allDirections } from './../../helpers/allDirections';
+import { idFromCoors } from './../../helpers/idFromCoors';
 
 const rowLetterIds = [
     'H','G','F','E','D','C','B','A'
@@ -43,26 +43,46 @@ export default class Chessboard {
         const activeField = findField( this.activeFieldId, this.fields );
         const _moveRange = [], _captureRange = [];
 
-        allDirections.forEach( direction => {
+        if ( !activeField.figure?.range?.length ) return;
 
-            // const field = fieldFromVec(activeField, direction);
-            const field = activeField.fieldFromVec( direction, this.fields );
-            if ( !field ) return;
+        activeField.figure.range.forEach( fieldData => {
+
+            const _field = findField( fieldData.id, this.fields );
+            if ( _field.figure ) return null;
+            const distance = Math.abs( activeField.vec.x - _field.vec.x );
 
             // move
-            if ( !field.figure && activeField.figure.direction === direction[1] ) _moveRange.push(field.id);
+            if ( 
+                distance === 1
+                && !_field.figure
+                && ( activeField.figure.direction === fieldData.direction[1] || !activeField.figure.direction)
+                ) _moveRange.push(_field.id);
 
-            // capture
-            if ( field.figure ){
-                // check if field behind is empty
-                const fieldBehind = field.fieldFromVec( direction, this.fields );
-                if ( !fieldBehind ) return;
-                if ( !fieldBehind.figure ){
+            // capture or queen's move
+            else if ( distance > 1 ){
+                let figuresAmount = 0, capturedId = null;
+                for ( let i = 1; i <= distance - 1; i++ ){ // check only fields between, don't include _field
+                    const _vec = activeField.vec.plus( fieldData.direction, i );
+                    if ( !_vec ) continue;
+                    const betweenField = findField( idFromCoors( _vec.x, _vec.y ), this.fields );
+                    if ( betweenField.figure?.team === activeField.figure.team ) return null;
+                    if ( betweenField.figure ){
+                        figuresAmount++;
+                        console.log(figuresAmount);
+                        console.log(betweenField.id);
+                        if ( figuresAmount === 1 ) capturedId = betweenField.id;
+                        if ( figuresAmount > 1 ) return null; // two figures in the way
+                    }
+                };
+
+                if ( figuresAmount === 0 && activeField.figure?.type === 'pawn' ) return null;
+                if ( figuresAmount === 0 && activeField.figure?.type === 'queen' ) _moveRange.push(_field.id);
+                else if ( figuresAmount === 1 ){
                     _captureRange.push({
-                        id: fieldBehind.id,
-                        capturedId: field.id
-                    })
-                } else return null;
+                        id: _field.id,
+                        capturedId
+                    });
+                }
             }
 
         });
