@@ -1,6 +1,5 @@
 import Figure from './Figure';
 import { idFromCoors } from './../helpers/idFromCoors';
-import { findField } from './../functions/findField';
 import Vec from './Vec';
 
 export default class Field {
@@ -15,6 +14,16 @@ export default class Field {
 
     actionType( activeField, chessboard ){
 
+        // if there is a capture possibility, then it has priority
+        // filter out fields with figures ( to not disable 'move to' fields )
+        if ( 
+            chessboard.capturePossibilities.length 
+            && !chessboard.capturePossibilities.includes( this.id ) 
+            && this.figure
+            ){
+            return [];
+        }
+
         // capture
         if ( chessboard.checkCaptureRange(this.id) ){
             return ['capture', chessboard.checkCaptureRange(this.id)];
@@ -27,7 +36,7 @@ export default class Field {
         if ( this.figure?.team === chessboard.status.team ) return ['select'];
         
         // move
-        else if ( activeField && this.checkRange( activeField, chessboard.moveRange) ){
+        if ( activeField && this.checkRange( activeField, chessboard.moveRange) ){
             return ['move'];
         }
 

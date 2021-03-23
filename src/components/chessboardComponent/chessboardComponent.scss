@@ -8,8 +8,8 @@
     }
 
     &__field {
-        width: 50px;
-        height: 50px;
+        width: 60px;
+        height: 60px;
         box-sizing: border-box;
         display: flex;
         justify-content: center;
@@ -40,11 +40,13 @@
         height: 35px;
 
         &.white {
-            background-color: lighten(grey,30%)
+            background-color: lighten(grey,30%);
+            background-color: rgb(0, 255, 200);
         }
 
         &.black {
-            background-color: darken(grey,30%)
+            background-color: darken(grey,30%);
+            background-color: rgb(197, 38, 38);
         }
 
         &.pawn {

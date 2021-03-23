@@ -13,11 +13,13 @@ const chessboardComponent = (chessboard, stage) => {
 
             const classNames = [ "chessboard__field", `chessboard__field--${field.type}` ];
 
-            const [ actionType, capture ] = field.actionType( activeField, chessboard);
+            const [ actionType, capture ] = field.actionType( activeField, chessboard );
 
             if ( actionType ) classNames.push( "js-clickable chessboard__field--clickable" );
-            if ( chessboard.activeFieldId === field.id ) classNames.push( "chessboard__field--highlighted" );
-            if ( chessboard.lastMove.includes(field.id) ) classNames.push( "chessboard__field--highlighted" );
+            if ( 
+                chessboard.activeFieldId === field.id 
+                || chessboard.lastMove.includes(field.id) 
+                ) classNames.push( "chessboard__field--highlighted" );
 
             const figure = !field.figure ? '' 
                             : 
@@ -57,7 +59,6 @@ const chessboardComponent = (chessboard, stage) => {
                     field.getAttribute('data-action'),
                     parseInt(field.getAttribute('data-capture')),
                     );
-                chessboard.setRanges();
                 chessboardComponent(chessboard, stage);
             });
         });

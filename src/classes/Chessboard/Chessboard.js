@@ -32,53 +32,64 @@ export default class Chessboard {
         this.moveRange = [];
         this.captureRange = [];
         this.lastMove = [];
+        this.capturePossibilities = [];
+        this._filterCapturePossibilities();
     };
 
     updateStatus(id, actionType, capture){
-        updateStatus(id, actionType, capture, this)
+        updateStatus(id, actionType, capture, this);
+        this._setActiveFieldRanges();
+        this._filterCapturePossibilities();
     };
 
-    setRanges(){
+    _setActiveFieldRanges(){
         if ( !this.activeFieldId ) return;
         const activeField = findField( this.activeFieldId, this.fields );
-        const _moveRange = [], _captureRange = [];
+        
+        const { moveRange, captureRange } = this._filterRange( activeField )
 
-        if ( !activeField.figure?.range?.length ) return;
+        this.captureRange = captureRange;
+        this.moveRange = captureRange.length ? [] : moveRange; // force capture
+    }
 
-        activeField.figure.range.forEach( fieldData => {
+    _filterRange( field ){
+        
+        const moveRange = [], captureRange = [];
+
+        if ( !field.figure?.range?.length ) return { moveRange, captureRange };
+
+        field.figure.range.forEach( fieldData => {
 
             const _field = findField( fieldData.id, this.fields );
             if ( _field.figure ) return null;
-            const distance = Math.abs( activeField.vec.x - _field.vec.x );
+            const distance = Math.abs( field.vec.x - _field.vec.x );
 
             // move
             if ( 
                 distance === 1
                 && !_field.figure
-                && ( activeField.figure.direction === fieldData.direction[1] || !activeField.figure.direction)
-                ) _moveRange.push(_field.id);
+                && ( field.figure.direction === fieldData.direction[1] || !field.figure.direction)
+                ) moveRange.push(_field.id);
 
             // capture or queen's move
             else if ( distance > 1 ){
                 let figuresAmount = 0, capturedId = null;
                 for ( let i = 1; i <= distance - 1; i++ ){ // check only fields between, don't include _field
-                    const _vec = activeField.vec.plus( fieldData.direction, i );
+                    const _vec = field.vec.plus( fieldData.direction, i );
                     if ( !_vec ) continue;
                     const betweenField = findField( idFromCoors( _vec.x, _vec.y ), this.fields );
-                    if ( betweenField.figure?.team === activeField.figure.team ) return null;
+                    if ( betweenField.figure?.team === field.figure.team ) return null;
                     if ( betweenField.figure ){
                         figuresAmount++;
-                        console.log(figuresAmount);
-                        console.log(betweenField.id);
                         if ( figuresAmount === 1 ) capturedId = betweenField.id;
                         if ( figuresAmount > 1 ) return null; // two figures in the way
                     }
                 };
 
-                if ( figuresAmount === 0 && activeField.figure?.type === 'pawn' ) return null;
-                if ( figuresAmount === 0 && activeField.figure?.type === 'queen' ) _moveRange.push(_field.id);
+                if ( figuresAmount === 0 && field.figure?.type === 'pawn' ) return null;
+                if ( figuresAmount === 0 && field.figure?.type === 'queen' ) moveRange.push(_field.id);
                 else if ( figuresAmount === 1 ){
-                    _captureRange.push({
+                    captureRange.push({
                         id: _field.id,
                         capturedId
                     });
@@ -87,8 +98,22 @@ export default class Chessboard {
 
         });
 
-        this.moveRange = _moveRange;
-        this.captureRange = _captureRange;
+        return { moveRange, captureRange };
+    }
+
+    // gather ids of fields which can capture at a time
+    // according to rule that capturing is obligatory
+    _filterCapturePossibilities(){
+        const capturePossibilities = [];
+        this.fields.forEach( row => {
+            row.forEach(field => {
+                if ( field.figure?.team !== this.status.team ) return;
+                const { captureRange } = this._filterRange( field );
+                if ( captureRange.length ) capturePossibilities.push( field.id );
+            })
+        });
+        this.capturePossibilities = [...capturePossibilities];
+        console.log(capturePossibilities);
     }
 
     checkCaptureRange(id){

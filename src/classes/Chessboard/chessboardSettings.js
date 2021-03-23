@@ -11,14 +11,14 @@ const wp = { ...white, type: 'pawn' },
       bq = { ...black, type: 'queen' };
 
 export const chessboardSet = [
+        [ '', wp, '', wp, '', wp, '', wp],
         [wp, '', wp, '', wp, '', wp, ''],
-        emptyRow,
-        emptyRow,
-        emptyRow,
+        [ '', wp, '', wp, '', wp, '', wp],
         [bp, '', bp, '', bp, '', bp, ''],
-        ['', bp, '', bp, '', bp, '', bp],
         emptyRow,
-        [ '', wq, '', wp, '', wp, '', wp],
+        emptyRow,
+        [ '', bp, '', bp, '', bp, '', bp],
+        [bp, '', bp, '', bp, '', bp, ''],
     ];
 
 export const chessboardRange = [ [1,1], [ chessboardSet[0].length, chessboardSet.length ] ];
