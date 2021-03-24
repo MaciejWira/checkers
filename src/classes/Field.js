@@ -36,24 +36,11 @@ export default class Field {
         if ( this.figure?.team === chessboard.status.team ) return ['select'];
         
         // move
-        if ( activeField && this.checkRange( activeField, chessboard.moveRange) ){
+        if ( activeField && chessboard.moveRange.includes(this.id) ){
             return ['move'];
         }
 
         else return [];
-    }
-
-    checkRange( activeField, range ){
-
-        if ( !activeField || !range.length  ) return false;
-    
-        // standard move in basic range
-        if ( range.includes(this.id) ){
-            return true;
-        };
-    
-        return false;
-    
     }
 
 }

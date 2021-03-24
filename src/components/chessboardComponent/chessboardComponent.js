@@ -1,10 +1,9 @@
 import './chessboardComponent.scss'; 
-import { findField } from './../../functions/findField';
 
 // component for rendering chessboard object
 const chessboardComponent = (chessboard, stage) => {
 
-    const activeField = findField(chessboard.activeFieldId, chessboard.fields);
+    const activeField = chessboard.getField(chessboard.activeFieldId);
 
     const rows = chessboard.fields.map( row => {
 

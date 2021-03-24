@@ -1,7 +1,6 @@
-import { updateStatus } from './updateStatus';
 import Field from '../Field';
-import { findField } from './../../functions/findField';
 import { idFromCoors } from './../../helpers/idFromCoors';
+import Figure from './../Figure';
 
 const rowLetterIds = [
     'H','G','F','E','D','C','B','A'
@@ -36,69 +35,83 @@ export default class Chessboard {
         this._filterCapturePossibilities();
     };
 
-    updateStatus(id, actionType, capture){
-        updateStatus(id, actionType, capture, this);
+    updateStatus(id, actionType, captureId){
+        // updateStatus(id, actionType, capture, this);
+        if ( this.status.game === 'on' ){
+
+            // capture
+            if ( actionType === 'capture' && captureId ){
+                this._moveAction(id, captureId);
+            } 
+            
+            // field with a figure
+            if ( actionType === 'select' ){
+                this.activeFieldId = id;
+            } 
+            
+            // for disactivating activeField
+            else if ( actionType === 'deselect' ) {
+                this.activeFieldId = null;
+            } 
+            
+            else if ( actionType === 'move' ) {
+                this._moveAction(id, this);
+            };
+    
+        } 
         this._setActiveFieldRanges();
         this._filterCapturePossibilities();
     };
 
-    _setActiveFieldRanges(){
-        if ( !this.activeFieldId ) return;
-        const activeField = findField( this.activeFieldId, this.fields );
-        
-        const { moveRange, captureRange } = this._filterRange( activeField )
-
-        this.captureRange = captureRange;
-        this.moveRange = captureRange.length ? [] : moveRange; // force capture
+    _moveAction(id, captureId){
+        const updatedFields = this.fields.map( row => {
+            return row.map( field => {
+                if ( field.id === id ){
+                    const activeField = this.getField(this.activeFieldId);
+                    let figure = activeField.figure.figure;
+                    if ( 
+                        ( activeField.figure.direction === -1 && field.vec.y === 1 ) 
+                        || ( activeField.figure.direction === 1 && field.vec.y === this.fields.length ) 
+                        ) figure = { 
+                            team: activeField.figure.team, direction: activeField.figure.team, type: 'queen'
+                        };
+                    return new Field(
+                        new Figure( figure, field.vec),
+                        field.type,
+                        field.vec,
+                        field.name,
+                    );
+                }
+                else if ( field.id === this.activeFieldId || field.id === captureId ){
+                    return new Field(
+                        null,
+                        field.type,
+                        field.vec,
+                        field.name,
+                    )
+                }
+                else return field;
+            })
+        });
+    
+        this.moveRange = [];
+        this.captureRange = [];
+        this.fields = updatedFields;
+        this.lastMove = [ id, this.activeFieldId ];
+        this.activeFieldId = null;
+        this.status.team = this.status.team === 'white' ? 'black' : 'white';
     }
 
-    _filterRange( field ){
-        
-        const moveRange = [], captureRange = [];
-
-        if ( !field.figure?.range?.length ) return { moveRange, captureRange };
-
-        field.figure.range.forEach( fieldData => {
-
-            const _field = findField( fieldData.id, this.fields );
-            if ( _field.figure ) return null;
-            const distance = Math.abs( field.vec.x - _field.vec.x );
-
-            // move
-            if ( 
-                distance === 1
-                && !_field.figure
-                && ( field.figure.direction === fieldData.direction[1] || !field.figure.direction)
-                ) moveRange.push(_field.id);
-
-            // capture or queen's move
-            else if ( distance > 1 ){
-                let figuresAmount = 0, capturedId = null;
-                for ( let i = 1; i <= distance - 1; i++ ){ // check only fields between, don't include _field
-                    const _vec = field.vec.plus( fieldData.direction, i );
-                    if ( !_vec ) continue;
-                    const betweenField = findField( idFromCoors( _vec.x, _vec.y ), this.fields );
-                    if ( betweenField.figure?.team === field.figure.team ) return null;
-                    if ( betweenField.figure ){
-                        figuresAmount++;
-                        if ( figuresAmount === 1 ) capturedId = betweenField.id;
-                        if ( figuresAmount > 1 ) return null; // two figures in the way
-                    }
-                };
-
-                if ( figuresAmount === 0 && field.figure?.type === 'pawn' ) return null;
-                if ( figuresAmount === 0 && field.figure?.type === 'queen' ) moveRange.push(_field.id);
-                else if ( figuresAmount === 1 ){
-                    captureRange.push({
-                        id: _field.id,
-                        capturedId
-                    });
-                }
-            }
-
-        });
-
-        return { moveRange, captureRange };
+    _setActiveFieldRanges(){
+        if ( !this.activeFieldId ){
+            this.moveRange = [];
+            this.captureRange = [];
+            return;
+        };
+        const activeField = this.getField( this.activeFieldId );
+        const { moveRange, captureRange } = activeField.figure.filterRange( this )
+        this.captureRange = captureRange;
+        this.moveRange = captureRange.length ? [] : moveRange; // force capture
     }
 
     // gather ids of fields which can capture at a time
@@ -108,7 +121,7 @@ export default class Chessboard {
         this.fields.forEach( row => {
             row.forEach(field => {
                 if ( field.figure?.team !== this.status.team ) return;
-                const { captureRange } = this._filterRange( field );
+                const { captureRange } = field.figure.filterRange( this );
                 if ( captureRange.length ) capturePossibilities.push( field.id );
             })
         });
@@ -121,6 +134,18 @@ export default class Chessboard {
             if ( id === field.id ) return field.capturedId;
         };
         return null;
+    }
+
+    getField(id){
+        let field = null;
+        this.fields.forEach( row => {
+            row.forEach( _field => {
+                if ( _field.id === parseInt(id) ){
+                    field = _field;
+                }
+            })
+        });
+        return field;
     }
 
 }
