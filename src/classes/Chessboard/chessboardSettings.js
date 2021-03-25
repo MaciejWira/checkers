@@ -17,7 +17,7 @@ export const chessboardSet = [
         [wp, '', wp, '', wp, '', wp, ''],
         [ '', bp, '', bp, '', bp, '', bp],
         emptyRow,
-        emptyRow,
+        [ '', bp, '', bp, '', bp, '', bp],
         emptyRow,
         emptyRow,
         [bp, '', bp, '', bp, '', bp, ''],

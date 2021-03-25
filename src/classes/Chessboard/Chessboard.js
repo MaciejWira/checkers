@@ -1,6 +1,7 @@
 import Field from '../Field';
-import { idFromCoors } from './../../helpers/idFromCoors';
 import Figure from './../Figure';
+import { streakToArray } from './../../functions/streakToArr';
+import { biggestLength } from './../../functions/biggestLength';
 
 const rowLetterIds = [
     'H','G','F','E','D','C','B','A'
@@ -32,6 +33,7 @@ export default class Chessboard {
         this.captureRange = [];
         this.lastMove = [];
         this.capturePossibilities = [];
+        this.captureStreaks = [];
         this._filterCapturePossibilities();
     };
 
@@ -118,15 +120,19 @@ export default class Chessboard {
     // according to rule that capturing is obligatory
     _filterCapturePossibilities(){
         const capturePossibilities = [];
+        const captureStreaks = [];
         this.fields.forEach( row => {
             row.forEach(field => {
                 if ( field.figure?.team !== this.status.team ) return;
-                const { captureRange } = field.figure.filterRange( this );
+                const { captureRange, captureNodes } = field.figure.filterRange( this );
                 if ( captureRange.length ) capturePossibilities.push( field.id );
+                if ( captureNodes.length ) captureStreaks.push( streakToArray(captureNodes) );
             })
         });
         this.capturePossibilities = [...capturePossibilities];
-        console.log(capturePossibilities);
+        const _captureStreaks = captureStreaks.reduce((prev, curr) => [ ...prev, ...curr], []);
+        this.captureStreaks = biggestLength(_captureStreaks);
+        console.log(this.captureStreaks);
     }
 
     checkCaptureRange(id){
@@ -134,6 +140,15 @@ export default class Chessboard {
             if ( id === field.id ) return field.capturedId;
         };
         return null;
+    }
+
+    // check if field has a capture possibility
+    isInStreak(id){
+        let flag = false;
+        this.captureStreaks.forEach( captureStreak => {
+            if ( captureStreak[0] === id ) flag = true;
+        })
+        return flag;
     }
 
     getField(id){

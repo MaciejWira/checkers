@@ -1,15 +1,17 @@
 import { allDirections } from './../helpers/allDirections';
 import { idFromCoors } from './../helpers/idFromCoors';
 import { chessboardRange } from "./Chessboard/chessboardSettings";
+import Field from './Field';
 
 export default class Figure {
 
-    constructor( figure, vec ){
+    constructor( figure, vec, fieldId ){
         this.figure = figure;
         const { team, type, direction } = figure;
         this.team = team;
         this.type = type;
         this.vec = vec;
+        this.fieldId = fieldId;
 
         if ( type === 'pawn' ){
             this.range = this._rangeFields(2);
@@ -36,28 +38,31 @@ export default class Figure {
         return _fields;
     }
 
-    filterRange(chessboard){
+    // filter range according to chessboard status
+    filterRange( chessboard, captureStreaksSearch = false, excludedFields = [] ){
 
         const moveRange = [], captureRange = [];
-        
+        let captureNodes = [];
+
         if ( !this.range.length ) return { moveRange, captureRange };
 
         this.range.forEach( fieldData => {
 
-            const field = chessboard.getField( fieldData.id );
-            if ( field.figure ) return null;
-            const distance = Math.abs( this.vec.x - field.vec.x );
+            const aimField = chessboard.getField( fieldData.id );
+            if ( aimField.figure ) return null;
+            const distance = Math.abs( this.vec.x - aimField.vec.x );
 
             // move
             if ( 
-                distance === 1
-                && !field.figure
+                !captureStreaksSearch
+                && distance === 1
+                && !aimField.figure
                 && ( this.direction === fieldData.direction[1] || !this.direction)
-                ) moveRange.push(field.id);
+                ) moveRange.push(aimField.id);
 
-            else if ( distance > 1 ){
+            if ( distance > 1 ){
                 let figuresAmount = 0, capturedId = null;
-                for ( let i = 1; i <= distance - 1; i++ ){ // check only fields between, don't include field
+                for ( let i = 1; i <= distance - 1; i++ ){ // check only fields between, don't include aimField
                     const _vec = this.vec.plus( fieldData.direction, i );
                     if ( !_vec ) continue;
                     const betweenField = chessboard.getField( idFromCoors( _vec.x, _vec.y ) );
@@ -69,20 +74,38 @@ export default class Figure {
                     }
                 };
 
-                console.log(figuresAmount);
+                if ( figuresAmount === 1 ){
+                    if ( !captureStreaksSearch ){
+                        captureRange.push({
+                            id: aimField.id,
+                            capturedId
+                        });
+                    };
+                    captureNodes = [...captureNodes, this.captureStreaks( chessboard.getField(this.fieldId), aimField, chessboard, excludedFields )];
+                } else if ( !captureStreaksSearch && figuresAmount === 0 && this?.type === 'queen' ) moveRange.push(aimField.id);
 
-                if ( figuresAmount === 0 && this?.type === 'queen' ) moveRange.push(field.id);
-                else if ( figuresAmount === 1 ){
-                    captureRange.push({
-                        id: field.id,
-                        capturedId
-                    });
-                }
             }
 
         });
 
-        return { moveRange, captureRange };        
+        return { moveRange, captureRange, captureNodes };        
+    }
+
+    captureStreaks( field, aimField, chessboard, excludedFields = [] ){
+
+        const node = {
+            id: field.id,
+            nodes: []
+        };
+
+        if ( excludedFields.includes( field.id ) || excludedFields.includes( aimField.id ) ) return node;
+        // specify this more
+        const _excludedFields = [ ...excludedFields, field.id ];
+
+        const fakeField = new Field( this.figure, field.type, { x: aimField.vec.x , y: aimField.vec.y } );
+        const { captureNodes } = fakeField.figure.filterRange( chessboard, true, _excludedFields );
+        node.nodes = captureNodes.length ? captureNodes : [{ id: aimField.id, nodes: []}];
+        return node;
     }
 
 }
