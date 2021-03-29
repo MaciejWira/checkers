@@ -39,24 +39,26 @@ export default class Figure {
     }
 
     // filter range according to chessboard status
-    filterRange( chessboard, captureStreaksSearch = false, excludedFields = [] ){
+    filterRange( chessboard, startFieldId = null, captureStreaksSearch = false, excludedAimFields = [], prevFieldId ){
 
-        const moveRange = [], captureRange = [];
+        const moveRange = [];
         let captureNodes = [];
 
-        if ( !this.range.length ) return { moveRange, captureRange };
+        if ( !this.range.length ) return { moveRange, captureNodes };
 
         this.range.forEach( fieldData => {
 
             const aimField = chessboard.getField( fieldData.id );
-            if ( aimField.figure ) return null;
+            if ( 
+                aimField.id === prevFieldId ||
+                ( aimField.figure && startFieldId !== aimField.id )
+                ) return; // occupied field except field where streak starts - case when when capture takes place again at starting field
             const distance = Math.abs( this.vec.x - aimField.vec.x );
 
             // move
             if ( 
                 !captureStreaksSearch
                 && distance === 1
-                && !aimField.figure
                 && ( this.direction === fieldData.direction[1] || !this.direction)
                 ) moveRange.push(aimField.id);
 
@@ -66,44 +68,49 @@ export default class Figure {
                     const _vec = this.vec.plus( fieldData.direction, i );
                     if ( !_vec ) continue;
                     const betweenField = chessboard.getField( idFromCoors( _vec.x, _vec.y ) );
-                    if ( betweenField.figure?.team === this.team ) return null;
+                    if ( betweenField.figure?.team === this.team ) return;
                     if ( betweenField.figure ){
                         figuresAmount++;
                         if ( figuresAmount === 1 ) capturedId = betweenField.id;
-                        if ( figuresAmount > 1 ) return null; // two figures in the way
+                        if ( figuresAmount > 1 ) return; // two figures in the way
                     }
                 };
 
                 if ( figuresAmount === 1 ){
-                    if ( !captureStreaksSearch ){
-                        captureRange.push({
-                            id: aimField.id,
-                            capturedId
-                        });
-                    };
-                    captureNodes = [...captureNodes, this.captureStreaks( chessboard.getField(this.fieldId), aimField, chessboard, excludedFields )];
+                    captureNodes = [
+                        ...captureNodes, 
+                        this._createCaptureNodes({ 
+                            field: chessboard.getField(this.fieldId), 
+                            aimField, 
+                            capturedId,
+                            chessboard, 
+                            excludedAimFields,
+                            startFieldId
+                        })];
                 } else if ( !captureStreaksSearch && figuresAmount === 0 && this?.type === 'queen' ) moveRange.push(aimField.id);
 
             }
 
         });
 
-        return { moveRange, captureRange, captureNodes };        
+        return { moveRange, captureNodes };        
     }
 
-    captureStreaks( field, aimField, chessboard, excludedFields = [] ){
+    // create capture streaks as nested objects with nodes
+    _createCaptureNodes({ field, aimField, capturedId, chessboard, excludedAimFields = [], startFieldId }){
 
         const node = {
             id: field.id,
+            capturedId,
             nodes: []
         };
 
-        if ( excludedFields.includes( field.id ) || excludedFields.includes( aimField.id ) ) return node;
-        // specify this more
-        const _excludedFields = [ ...excludedFields, field.id ];
+        if ( excludedAimFields.includes( aimField.id ) ) return node;
+
+        const _excludedAimFields = [ ...excludedAimFields, aimField.id ];
 
         const fakeField = new Field( this.figure, field.type, { x: aimField.vec.x , y: aimField.vec.y } );
-        const { captureNodes } = fakeField.figure.filterRange( chessboard, true, _excludedFields );
+        const { captureNodes } = fakeField.figure.filterRange( chessboard, startFieldId, true, _excludedAimFields, field.id );
         node.nodes = captureNodes.length ? captureNodes : [{ id: aimField.id, nodes: []}];
         return node;
     }

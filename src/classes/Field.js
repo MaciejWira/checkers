@@ -30,13 +30,13 @@ export default class Field {
         }
 
         // deselect
-        else if ( this.id === chessboard.activeFieldId ) return ['deselect'];
+        else if ( this.id === chessboard.activeFieldId && !chessboard.captureMode ) return ['deselect'];
 
         // select
-        else if ( this.figure?.team === chessboard.status.team ) return ['select'];
+        else if ( this.figure?.team === chessboard.status.team && !chessboard.captureMode ) return ['select'];
         
         // move
-        else if ( activeField && chessboard.moveRange.includes(this.id) ){
+        else if ( activeField && chessboard.moveRange.includes(this.id) && !chessboard.captureMode ){
             return ['move'];
         }
 

@@ -1,6 +1,6 @@
 import Field from '../Field';
 import Figure from './../Figure';
-import { streakToArray } from './../../functions/streakToArr';
+import { nodesToStreaks, streakToArray } from './../../functions/streakToArr';
 import { biggestLength } from './../../functions/biggestLength';
 
 const rowLetterIds = [
@@ -30,20 +30,21 @@ export default class Chessboard {
         };
         this.activeFieldId = null;
         this.moveRange = [];
-        this.captureRange = [];
         this.lastMove = [];
-        this.capturePossibilities = [];
         this.captureStreaks = [];
+        this.captureStreaksActive = [];
         this._filterCapturePossibilities();
+        this.captureMode = false;
+        this.captures = []; // ids of captured figures during multi capture
     };
 
-    updateStatus(id, actionType, captureId){
+    updateStatus(id, actionType, capturedId){
         // updateStatus(id, actionType, capture, this);
         if ( this.status.game === 'on' ){
 
             // capture
-            if ( actionType === 'capture' && captureId ){
-                this._moveAction(id, captureId);
+            if ( actionType === 'capture' && capturedId ){
+                this._turnAction(id, capturedId);
             } 
             
             // field with a figure
@@ -57,26 +58,45 @@ export default class Chessboard {
             } 
             
             else if ( actionType === 'move' ) {
-                this._moveAction(id, this);
+                this._turnAction(id);
             };
     
         } 
-        this._setActiveFieldRanges();
-        this._filterCapturePossibilities();
+        
+        if ( !this.activeFieldId ) this._filterCapturePossibilities();
+        else this._setActiveFieldRanges();
+
     };
 
-    _moveAction(id, captureId){
+    _turnAction(id, capturedId){
+        if ( capturedId && !this.captureMode){
+            this.captureMode = true; // start capture streak
+        } 
+
+        // condition for end of capture streak
+        if ( this.captureMode && this.captureStreaksActive[0].length <= 2){
+            this.captureMode = false;
+            this.captures = [ ...this.captures, capturedId ];
+            this.captureStreaks = [];
+            this.captureStreaksActive = [];
+        }
+
         const updatedFields = this.fields.map( row => {
             return row.map( field => {
                 if ( field.id === id ){
                     const activeField = this.getField(this.activeFieldId);
                     let figure = activeField.figure.figure;
+                    // don't turn into queen if it is during multi capturing
                     if ( 
-                        ( activeField.figure.direction === -1 && field.vec.y === 1 ) 
-                        || ( activeField.figure.direction === 1 && field.vec.y === this.fields.length ) 
-                        ) figure = { 
-                            team: activeField.figure.team, direction: activeField.figure.team, type: 'queen'
-                        };
+                        ( activeField.figure.direction === -1 && field.vec.y === 1 && !this.captureMode) 
+                        || ( activeField.figure.direction === 1 && field.vec.y === this.fields.length && !this.captureMode) 
+                        ){
+                            figure = { 
+                                team: activeField.figure.team, 
+                                direction: activeField.figure.team, 
+                                type: 'queen'
+                            };
+                        }
                     return new Field(
                         new Figure( figure, field.vec),
                         field.type,
@@ -84,7 +104,12 @@ export default class Chessboard {
                         field.name,
                     );
                 }
-                else if ( field.id === this.activeFieldId || field.id === captureId ){
+                // capturing of all fields will be rendered after multi capturing
+                else if ( 
+                    field.id === this.activeFieldId
+                    || this.captures.includes(field.id)
+                    && !this.captureMode
+                    ){
                     return new Field(
                         null,
                         field.type,
@@ -97,47 +122,57 @@ export default class Chessboard {
         });
     
         this.moveRange = [];
-        this.captureRange = [];
         this.fields = updatedFields;
         this.lastMove = [ id, this.activeFieldId ];
-        this.activeFieldId = null;
-        this.status.team = this.status.team === 'white' ? 'black' : 'white';
+        if ( !this.captureMode ){
+            this.activeFieldId = null;
+            this.status.team = this.status.team === 'white' ? 'black' : 'white';
+            this.captures = [];
+        } else {
+            this.activeFieldId = id;
+            this.captures = [ ...this.captures, capturedId ];
+        }
     }
 
     _setActiveFieldRanges(){
         if ( !this.activeFieldId ){
             this.moveRange = [];
-            this.captureRange = [];
             return;
         };
         const activeField = this.getField( this.activeFieldId );
-        const { moveRange, captureRange } = activeField.figure.filterRange( this )
-        this.captureRange = captureRange;
-        this.moveRange = captureRange.length ? [] : moveRange; // force capture
+
+        if ( this.captureMode ){
+            this.captureStreaksActive = this.captureStreaksActive
+                                            .map( streak => streak.slice(1))
+                                            .filter( streak => streak[0].id === this.activeFieldId)
+            console.log(this.activeFieldId);
+            console.log(this.captureStreaksActive);
+        } else if ( this.captureStreaks.length ){ // active field can capture
+            this.captureStreaksActive = this.captureStreaks.filter( streak => streak[0].id === this.activeFieldId );
+            console.log(this.captureStreaksActive);
+        } else {
+            this.moveRange = activeField.figure.filterRange( this, this.activeFieldId ).moveRange
+        }
     }
 
     // gather ids of fields which can capture at a time
-    // according to rule that capturing is obligatory
+    // according to rule that capturing is obligatory and most captures in streak have precedence
     _filterCapturePossibilities(){
-        const capturePossibilities = [];
         const captureStreaks = [];
         this.fields.forEach( row => {
             row.forEach(field => {
                 if ( field.figure?.team !== this.status.team ) return;
-                const { captureRange, captureNodes } = field.figure.filterRange( this );
-                if ( captureRange.length ) capturePossibilities.push( field.id );
-                if ( captureNodes.length ) captureStreaks.push( streakToArray(captureNodes) );
+                const { captureNodes } = field.figure.filterRange( this, field.id );
+                if ( captureNodes.length ) captureStreaks.push( nodesToStreaks(captureNodes) );
             })
         });
-        this.capturePossibilities = [...capturePossibilities];
         const _captureStreaks = captureStreaks.reduce((prev, curr) => [ ...prev, ...curr], []);
         this.captureStreaks = biggestLength(_captureStreaks);
-        console.log(this.captureStreaks);
     }
 
     checkCaptureRange(id){
-        for ( const field of this.captureRange ){
-            if ( id === field.id ) return field.capturedId;
+        for ( const streak of this.captureStreaksActive ){
+            if ( id === streak[1]?.id ) return streak[0].capturedId;
         };
         return null;
     }
@@ -146,7 +181,7 @@ export default class Chessboard {
     isInStreak(id){
         let flag = false;
         this.captureStreaks.forEach( captureStreak => {
-            if ( captureStreak[0] === id ) flag = true;
+            if ( captureStreak[0].id === id ) flag = true;
         })
         return flag;
     }
