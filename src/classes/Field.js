@@ -14,6 +14,8 @@ export default class Field {
 
     actionType( activeField, chessboard ){
 
+        if ( chessboard.status.game !== 'on' ) return [];
+
         // if there is a capture possibility, then it has priority
         // filter out fields with figures ( to not disable 'move to' fields )
         if ( 

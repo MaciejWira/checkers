@@ -2,8 +2,8 @@ const emptyRow = [
     '', '', '', '', '', '', '', ''
 ];
 
-const white = { team: 'white', direction: -1 }
-const black = { team: 'black', direction: 1 }
+const white = { team: 'white', direction: 1 }
+const black = { team: 'black', direction: -1 }
 
 const wp = { ...white, type: 'pawn' }, 
       bp = { ...black, type: 'pawn' }, 
@@ -11,14 +11,14 @@ const wp = { ...white, type: 'pawn' },
       bq = { ...black, type: 'queen' };
 
 export const chessboardSet = [
-        [ '', wp, '', wp, '', wp, '', wp],
-        [ wp, '', wp, '', wp, '', wp, '' ],
-        emptyRow,
-        emptyRow,
-        emptyRow,
-        emptyRow,
-        [ '', bp, '', bp, '', bp, '', bp],
-        [bp, '', bp, '', bp, '', bp, ''],
+    [ '', bp, '', bp, '', bp, '', bp],
+    [bp, '', bp, '', bp, '', bp, ''],
+    emptyRow,
+    emptyRow,
+    emptyRow,
+    emptyRow,
+    [ '', wp, '', wp, '', wp, '', wp],
+    [ wp, '', wp, '', wp, '', wp, '' ],
     ]; 
 
 export const chessboardRange = [ [1,1], [ chessboardSet[0].length, chessboardSet.length ] ];

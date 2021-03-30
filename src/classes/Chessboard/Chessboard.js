@@ -1,6 +1,6 @@
 import Field from '../Field';
 import Figure from './../Figure';
-import { nodesToStreaks, streakToArray } from './../../functions/streakToArr';
+import { nodesToStreaks } from './../../functions/streakToArr';
 import { biggestLength } from './../../functions/biggestLength';
 
 const rowLetterIds = [
@@ -25,8 +25,8 @@ export default class Chessboard {
             })
         });
         this.status = {
-            game: 'on', // before / on / finished
-            team: 'white', // white / black
+            game: 'before', // before / on / finished
+            team: '', // white / black
         };
         this.activeFieldId = null;
         this.moveRange = [];
@@ -36,6 +36,11 @@ export default class Chessboard {
         this._filterCapturePossibilities();
         this.captureMode = false;
         this.captures = []; // ids of captured figures during multi capture
+    };
+
+    startGame(){
+        this.status.game = 'on';
+        this.status.team = 'white';
     };
 
     updateStatus(id, actionType, capturedId){

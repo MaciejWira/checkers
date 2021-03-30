@@ -1,7 +1,7 @@
 import './chessboardComponent.scss'; 
 
 // component for rendering chessboard object
-const chessboardComponent = (chessboard, stage) => {
+const chessboardComponent = chessboard => {
 
     const activeField = chessboard.getField(chessboard.activeFieldId);
 
@@ -24,7 +24,7 @@ const chessboardComponent = (chessboard, stage) => {
                             : 
                             `<div 
                                 class="chessboard__figure ${field.figure.team} ${field.figure.type}">
-                                </div>`
+                                </div>`;
 
             return `
                 <div 
@@ -41,26 +41,15 @@ const chessboardComponent = (chessboard, stage) => {
         });
 
         return `
-            <div class="chessboard__row">
-                ${_fields.join("")}
-            </div>
+                <div>
+                    <div class="chessboard__row">
+                        ${_fields.join("")}
+                    </div>
+                </div>
             `;
     });
 
-    stage.innerHTML = `<div class="chessboard">${rows.join("")}</div>`;
-
-    // click handlers
-    [...document.querySelectorAll('.js-clickable')]
-        .forEach( field => {
-            field.addEventListener('click', () => {
-                chessboard.updateStatus( 
-                    parseInt(field.getAttribute('data-id')), 
-                    field.getAttribute('data-action'),
-                    parseInt(field.getAttribute('data-capture')),
-                    );
-                chessboardComponent(chessboard, stage);
-            });
-        });
+    return rows.join("");
 
 };
 

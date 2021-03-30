@@ -1,0 +1,21 @@
+.teamboard {
+    display: flex;
+    justify-content: space-between;
+
+    &__heading {
+        text-align: center;
+        text-transform: uppercase;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        border-bottom: solid 4px transparent;
+        line-height: 1.75;
+    }
+
+    &--active {
+
+        .teamboard__heading {
+            border-color: red;
+        }
+    }
+
+}
