@@ -39,7 +39,7 @@ export default class Figure {
     }
 
     // filter range according to chessboard status
-    filterRange( chessboard, startFieldId = null, captureStreaksSearch = false, excludedAimFields = [], prevFieldId ){
+    filterRange( chessboard, startFieldId = null, captureStreaksSearch = false, capturedFields = [] ){
 
         const moveRange = [];
         let captureNodes = [];
@@ -49,10 +49,8 @@ export default class Figure {
         this.range.forEach( fieldData => {
 
             const aimField = chessboard.getField( fieldData.id );
-            if ( 
-                aimField.id === prevFieldId ||
-                ( aimField.figure && startFieldId !== aimField.id )
-                ) return; // occupied field except field where streak starts - case when when capture takes place again at starting field
+            // occupied field except field where streak starts - case when when capture takes place again at starting field
+            if ( aimField.figure && startFieldId !== aimField.id ) return;
             const distance = Math.abs( this.vec.x - aimField.vec.x );
 
             // move
@@ -63,7 +61,9 @@ export default class Figure {
                 ) moveRange.push(aimField.id);
 
             if ( distance > 1 ){
+
                 let figuresAmount = 0, capturedId = null;
+
                 for ( let i = 1; i <= distance - 1; i++ ){ // check only fields between, don't include aimField
                     const _vec = this.vec.plus( fieldData.direction, i );
                     if ( !_vec ) continue;
@@ -72,6 +72,7 @@ export default class Figure {
                     if ( betweenField.figure ){
                         figuresAmount++;
                         if ( figuresAmount === 1 ) capturedId = betweenField.id;
+                        if ( capturedFields.includes( capturedId ) ) return;
                         if ( figuresAmount > 1 ) return; // two figures in the way
                     }
                 };
@@ -84,7 +85,7 @@ export default class Figure {
                             aimField, 
                             capturedId,
                             chessboard, 
-                            excludedAimFields,
+                            capturedFields,
                             startFieldId
                         })];
                 } else if ( !captureStreaksSearch && figuresAmount === 0 && this?.type === 'queen' ) moveRange.push(aimField.id);
@@ -97,7 +98,7 @@ export default class Figure {
     }
 
     // create capture streaks as nested objects with nodes
-    _createCaptureNodes({ field, aimField, capturedId, chessboard, excludedAimFields = [], startFieldId }){
+    _createCaptureNodes({ field, aimField, capturedId, chessboard, capturedFields = [], startFieldId }){
 
         const node = {
             id: field.id,
@@ -105,12 +106,9 @@ export default class Figure {
             nodes: []
         };
 
-        if ( excludedAimFields.includes( aimField.id ) ) return node;
-
-        const _excludedAimFields = [ ...excludedAimFields, aimField.id ];
-
+        const _capturedFields = [ ...capturedFields, capturedId ];
         const fakeField = new Field( this.figure, field.type, { x: aimField.vec.x , y: aimField.vec.y } );
-        const { captureNodes } = fakeField.figure.filterRange( chessboard, startFieldId, true, _excludedAimFields, field.id );
+        const { captureNodes } = fakeField.figure.filterRange( chessboard, startFieldId, true, _capturedFields );
         node.nodes = captureNodes.length ? captureNodes : [{ id: aimField.id, nodes: []}];
         return node;
     }
