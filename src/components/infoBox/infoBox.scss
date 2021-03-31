@@ -1,0 +1,32 @@
+@import '../../styles/vars';
+
+.infobox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(black, .5);
+    padding: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &__content {
+        background-color: white;
+    }
+
+    &__button {
+        border: none;
+        padding: 10px 20px;
+        color: $color-dark;
+        font-size: 20px;
+        font-weight: 600;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $color-light;
+        }
+    }
+
+}
