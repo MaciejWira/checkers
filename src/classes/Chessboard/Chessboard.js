@@ -26,8 +26,8 @@ export default class Chessboard {
             })
         });
         this.status = {
-            game: 'on', // before / on / finished
-            team: 'white', // white / black
+            game: 'before', // before / on / finished
+            team: '', // white / black
         };
         this.activeFieldId = null;
         this.moveRange = [];

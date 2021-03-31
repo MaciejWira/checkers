@@ -49,7 +49,22 @@ const chessboardComponent = chessboard => {
             `;
     });
 
-    return rows.join("");
+    const chessboardDOM = rows.join("");
+    const chessboardEvents = (chessboard, callback) => {
+        [...document.querySelectorAll('.js-clickable')]
+        .forEach( field => {
+            field.addEventListener('click', () => {
+                chessboard.updateStatus( 
+                    parseInt(field.getAttribute('data-id')), 
+                    field.getAttribute('data-action'),
+                    parseInt(field.getAttribute('data-capture'))
+                );
+                callback();
+            });
+        });
+    }
+
+    return { chessboardDOM, chessboardEvents };
 
 };
 

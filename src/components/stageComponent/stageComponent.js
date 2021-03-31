@@ -7,30 +7,23 @@ const stageComponent = (chessboard, stage) => {
 
     const teamBoardWhite = new TeamBoard('white', chessboard.status.team);
     const teamBoardBlack = new TeamBoard('black', chessboard.status.team);
+    const { chessboardDOM, chessboardEvents } = chessboardComponent(chessboard);
+    const { infoBoxDOM, infoBoxEvents } = infoBox(chessboard);
 
     stage.innerHTML = `
             <div class="stage">
                 ${teamBoardBlack.render(chessboard.status.team)}
                 <div class="chessboard">
-                    ${chessboardComponent(chessboard)}
-                    ${infoBox(chessboard.status.game) ? infoBox(chessboard.status.game) : ''}
+                    ${chessboardDOM}
+                    ${infoBoxDOM ? infoBoxDOM : ''}
                 </div>
                 ${teamBoardWhite.render(chessboard.status.team)}
             </div>
         `;
 
-    // click handlers
-    [...document.querySelectorAll('.js-clickable')]
-        .forEach( field => {
-            field.addEventListener('click', () => {
-                chessboard.updateStatus( 
-                    parseInt(field.getAttribute('data-id')), 
-                    field.getAttribute('data-action'),
-                    parseInt(field.getAttribute('data-capture'))
-                );
-                stageComponent(chessboard, stage);
-            });
-        });
+    // event handlers
+    chessboardEvents(chessboard, () => stageComponent(chessboard, stage));
+    if ( infoBoxEvents ) infoBoxEvents();
 
 };
 
