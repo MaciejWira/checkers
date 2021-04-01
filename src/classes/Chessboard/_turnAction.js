@@ -1,4 +1,4 @@
-import Field from './../Field';
+import Field from '../Field/Field';
 import Figure from './../Figure';
 
 const _turnAction = function(id, capturedId){
@@ -35,6 +35,7 @@ const _turnAction = function(id, capturedId){
                     field.type,
                     field.vec,
                     field.name,
+                    this
                 );
             }
             // capturing of all fields will be rendered after multi capturing
@@ -48,6 +49,7 @@ const _turnAction = function(id, capturedId){
                     field.type,
                     field.vec,
                     field.name,
+                    this
                 )
             }
             else return field;

@@ -1,7 +1,7 @@
 import { allDirections } from './../helpers/allDirections';
 import { idFromCoors } from './../helpers/idFromCoors';
 import { chessboardRange } from "./Chessboard/chessboardSettings";
-import Field from './Field';
+import Field from './Field/Field';
 
 export default class Figure {
 
@@ -107,7 +107,7 @@ export default class Figure {
         };
 
         const _capturedFields = [ ...capturedFields, capturedId ];
-        const fakeField = new Field( this.figure, field.type, { x: aimField.vec.x , y: aimField.vec.y } );
+        const fakeField = new Field( this.figure, field.type, { x: aimField.vec.x , y: aimField.vec.y }, chessboard );
         const { captureNodes } = fakeField.figure.filterRange( chessboard, startFieldId, true, _capturedFields );
         node.nodes = captureNodes.length ? captureNodes : [{ id: aimField.id, nodes: []}];
         return node;

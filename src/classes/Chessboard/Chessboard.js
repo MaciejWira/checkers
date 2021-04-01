@@ -1,8 +1,9 @@
-import Field from '../Field';
+import Field from '../Field/Field';
 import updateStatus from './updateStatus';
 import _turnAction from './_turnAction';
 import _setActiveFieldRanges from './_setActiveFieldRanges';
 import _filterCapturePossibilities from './_filterCapturePossibilities';
+import render from './render';
 
 const rowLetterIds = [
     'H','G','F','E','D','C','B','A'
@@ -10,7 +11,8 @@ const rowLetterIds = [
 
 export default class Chessboard {
 
-    constructor( set ){
+    constructor( set, stage ){
+        this.stage = stage;
         this.fields = set.map( (row, rowIndex) => {
             return row.map( (figure, fieldIndex) => {
                 const columnId = fieldIndex + 1,
@@ -21,15 +23,16 @@ export default class Chessboard {
                     figure, 
                     type, 
                     { x: columnId, y: rowId },
-                    rowLetterIds[rowIndex] + columnId // field name
+                    rowLetterIds[rowIndex] + columnId, // field name
+                    this
                     )
             })
         });
-        this.status = {
-            game: 'before', // before / on / finished
-            team: '', // white / black
-        };
         this.activeFieldId = null;
+        this.status = {
+            game: 'on', // before / on / finished
+            team: 'white', // white / black
+        };
         this.moveRange = [];
         this.lastMove = [];
         this.captureStreaks = [];
@@ -73,6 +76,7 @@ export default class Chessboard {
 
 Chessboard.prototype.updateStatus = updateStatus;
 Chessboard.prototype._turnAction = _turnAction;
+Chessboard.prototype.render = render;
 Chessboard.prototype._setActiveFieldRanges = _setActiveFieldRanges;
 // gather ids of fields which can capture at a time
 // according to rule that capturing is obligatory and most captures in streak have precedence
