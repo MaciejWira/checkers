@@ -16,7 +16,7 @@ const infoBox = (chessboard, winner = '') => {
                     game: 'on',
                     team: 'white'
                 };
-                chessboard.stage.render();
+                chessboard.updateStatus();
             });
         }
         content = createElement('button', buttonHandler, { class: 'infobox__button' }, document.createTextNode('Start'))

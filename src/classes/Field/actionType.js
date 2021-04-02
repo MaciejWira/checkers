@@ -21,7 +21,12 @@ const actionType = function( chessboard ){
     else if ( this.id === chessboard.activeFieldId && !chessboard.captureMode ) return ['deselect'];
 
     // select
-    else if ( this.figure?.team === chessboard.status.team && !chessboard.captureMode ) return ['select'];
+    else if ( 
+        chessboard.isInStreak( this.id ) ||
+        ( this.figure?.team === chessboard.status.team 
+            && !chessboard.captureMode 
+            && chessboard.movePossibilities.includes(this.id) )
+        ) return ['select'];
     
     // move
     else if ( chessboard.moveRange.includes(this.id) && !chessboard.captureMode ){

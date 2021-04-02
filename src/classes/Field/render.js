@@ -22,11 +22,10 @@ const render = function(){
                 actionType ? actionType : "",
                 capture ? capture : ""
             );
-            this.chessboard.stage.render();
         });
     };
 
-    return createElement('div', handler, { class: classNames.join(" ") }, figure);
+    return createElement('div', actionType ? handler : null, { class: classNames.join(" ") }, figure);
 }
 
 export default render;

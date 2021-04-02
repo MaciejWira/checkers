@@ -21,10 +21,12 @@ const updateStatus = function(id, actionType, capturedId){
             this._turnAction(id);
         };
 
+        if ( !this.activeFieldId ) this._filterPossibilities();
+        else this._setActiveFieldRanges();
+
     } 
-    
-    if ( !this.activeFieldId ) this._filterCapturePossibilities();
-    else this._setActiveFieldRanges();
+
+    this.stage.render();
 
 };
 

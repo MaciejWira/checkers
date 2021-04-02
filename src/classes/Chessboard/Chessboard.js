@@ -2,7 +2,7 @@ import Field from '../Field/Field';
 import updateStatus from './updateStatus';
 import _turnAction from './_turnAction';
 import _setActiveFieldRanges from './_setActiveFieldRanges';
-import _filterCapturePossibilities from './_filterCapturePossibilities';
+import _filterPossibilities from './_filterPossibilities';
 import render from './render';
 import './chessboard.scss';
 
@@ -32,13 +32,14 @@ export default class Chessboard {
         this.activeFieldId = null;
         this.status = {
             game: 'before', // before / on / finished
-            team: '', // white / black
+            team: 'white', // white / black
         };
-        this.moveRange = [];
+        this.moveRange = []; // possible moves for active field
+        this.movePossibilities = []; // fields which can move at a time
         this.lastMove = [];
         this.captureStreaks = [];
         this.captureStreaksActive = [];
-        this._filterCapturePossibilities();
+        if ( this.status.game === 'on' ) this._filterPossibilities();
         this.captureMode = false;
         this.captures = []; // ids of captured figures during multi capture
         };
@@ -81,4 +82,4 @@ Chessboard.prototype.render = render;
 Chessboard.prototype._setActiveFieldRanges = _setActiveFieldRanges;
 // gather ids of fields which can capture at a time
 // according to rule that capturing is obligatory and most captures in streak have precedence
-Chessboard.prototype._filterCapturePossibilities = _filterCapturePossibilities;
+Chessboard.prototype._filterPossibilities = _filterPossibilities;
