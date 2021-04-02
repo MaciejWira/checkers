@@ -1,34 +1,43 @@
 import './infoBox.scss';
+import createElement from './../../functions/createElement';
 
 const infoBox = (chessboard, winner = '') => {
 
     const gameStatus = chessboard.status.game;
 
-    if ( gameStatus === 'on' ) return {};
+    if ( gameStatus === 'on' ) return null;
 
     let content = null;
 
     if ( gameStatus === 'before' ){
-        content = `<button class="infobox__button js-start-game">Start</button>`;
+        const buttonHandler = el => {
+            el.addEventListener('click', () => {
+                chessboard.status = {
+                    game: 'on',
+                    team: 'white'
+                };
+                chessboard.stage.render();
+            });
+        }
+        content = createElement('button', buttonHandler, { class: 'infobox__button' }, document.createTextNode('Start'))
     } else if ( gameStatus === 'after' && winner){
         content = `<p class="infobox__paragraph">Winner: <strong class="infobox__strong">${winner}</strong></p>`;
+        content = createElement(
+                    'p', 
+                    null, 
+                    { class: 'infobox__paragraph' },
+                    // children
+                    document.createTextNode('Winner: '),
+                    createElement('strong', null, { class: 'infobox__strong' }, document.createTextNode(winner))
+                )
     }
 
-    const infoBoxDOM = `<div class="infobox">
-                            <div class="infobox__content">
-                                ${content}
-                            </div>
-                        </div>`;
-    const infoBoxEvents = () => {
-        document.querySelector('.js-start-game')?.addEventListener('click', () => {
-            chessboard.status = {
-                game: 'on',
-                team: 'white'
-            }
-        });
-    };
-
-    return { infoBoxDOM, infoBoxEvents };
+    return createElement(
+                'div', 
+                null, 
+                { class: 'infobox' },
+                createElement('div', null, { class: 'infobox__content' }, content)
+            );
 
 };
 

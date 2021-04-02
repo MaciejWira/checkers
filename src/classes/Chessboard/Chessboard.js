@@ -4,6 +4,7 @@ import _turnAction from './_turnAction';
 import _setActiveFieldRanges from './_setActiveFieldRanges';
 import _filterCapturePossibilities from './_filterCapturePossibilities';
 import render from './render';
+import './chessboard.scss';
 
 const rowLetterIds = [
     'H','G','F','E','D','C','B','A'
@@ -30,8 +31,8 @@ export default class Chessboard {
         });
         this.activeFieldId = null;
         this.status = {
-            game: 'on', // before / on / finished
-            team: 'white', // white / black
+            game: 'before', // before / on / finished
+            team: '', // white / black
         };
         this.moveRange = [];
         this.lastMove = [];

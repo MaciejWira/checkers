@@ -1,6 +1,7 @@
 import createElement from "../functions/createElement";
 import Chessboard from './Chessboard/Chessboard';
 import { chessboardSet } from './Chessboard/chessboardSettings';
+import TeamBoard from './TeamBoard/TeamBoard';
 
 export default class Stage {
 
@@ -12,7 +13,17 @@ export default class Stage {
 
     render(){
         if ( this.wrapper ) this.wrapper.remove();
-        const wrapper = createElement('div', null, { class: 'stage'}, this.chessboard.render());
+        const teamBoardWhite = new TeamBoard('white', this.chessboard.status.team);
+        const teamBoardBlack = new TeamBoard('black', this.chessboard.status.team);
+        const wrapper = createElement(
+                            'div', 
+                            null, 
+                            { class: 'stage'}, 
+                            // children
+                            teamBoardBlack.render(this.chessboard.status.team),
+                            this.chessboard.render(),
+                            teamBoardWhite.render(this.chessboard.status.team),
+                        );
         this.wrapper = wrapper;
         this.container.appendChild(wrapper);
     }

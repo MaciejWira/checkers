@@ -1,0 +1,28 @@
+@import '../../styles/vars';
+
+.field {
+    width: 60px;
+    height: 60px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &--dark {
+        background-color: $color-dark;
+    }
+
+    &--light {
+        background-color: $color-light;
+    }
+
+    &--highlighted {
+        border: solid 3px red;
+    }
+
+    &--clickable {
+        &:hover {
+            background-color: grey;
+        }
+    }
+}

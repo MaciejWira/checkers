@@ -1,4 +1,5 @@
 import './TeamBoard.scss';
+import createElement from './../../functions/createElement';
 
 export default class TeamBoard {
 
@@ -9,11 +10,17 @@ export default class TeamBoard {
 
     render(team){
 
-        return `
-            <div class="teamboard${ team === this.team ? " teamboard--active" : "" }">
-                <h2 class="teamboard__heading">${this.team}</h2>
-            </div>
-        `;
+        return createElement(
+                    'div', 
+                    null, 
+                    { class: `teamboard${ team === this.team ? " teamboard--active" : ""}` },
+                    createElement(
+                        'h2', 
+                        null, 
+                        { class: "teamboard__heading" },
+                        document.createTextNode(this.team)
+                        )
+                );
     }
 
 }

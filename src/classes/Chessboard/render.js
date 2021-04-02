@@ -1,4 +1,5 @@
 import createElement from '../../functions/createElement';
+import infoBox from './../../components/infoBox/infoBox';
 
 const render = function(){
 
@@ -10,7 +11,8 @@ const render = function(){
 
     });
 
-    return createElement('div', null, { class: "chessboard" }, ...rows);;
+    const infoBoxDOM = infoBox(this);
+    return createElement('div', null, { class: "chessboard" }, ...rows, infoBoxDOM);;
 }
 
 export default render;

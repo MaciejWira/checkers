@@ -2,16 +2,16 @@ import createElement from '../../functions/createElement';
 
 const render = function(){
 
-    const classNames = [ "chessboard__field", `chessboard__field--${this.type}` ];
+    const classNames = [ "field", `field--${this.type}` ];
 
     const [ actionType, capture ] = this.actionType( this.chessboard );
 
-    if ( actionType ) classNames.push( "chessboard__field--clickable" );
+    if ( actionType ) classNames.push( "field--clickable" );
 
     if ( 
         this.id === this.chessboard.activeFieldId
         || this.chessboard.lastMove.includes(this.id) 
-        ) classNames.push( "chessboard__field--highlighted" );
+        ) classNames.push( "field--highlighted" );
 
     const figure = this.figure?.render();
 
