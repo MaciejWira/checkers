@@ -26,7 +26,9 @@ const updateStatus = function(id, actionType, capturedId){
 
     } 
 
+    this.checkStatus();
     this.stage.render();
+    console.log(this);
 
 };
 

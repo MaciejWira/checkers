@@ -1,7 +1,7 @@
 import './infoBox.scss';
 import createElement from './../../functions/createElement';
 
-const infoBox = (chessboard, winner = '') => {
+const infoBox = chessboard => {
 
     const gameStatus = chessboard.status.game;
 
@@ -20,15 +20,22 @@ const infoBox = (chessboard, winner = '') => {
             });
         }
         content = createElement('button', buttonHandler, { class: 'infobox__button' }, document.createTextNode('Start'))
-    } else if ( gameStatus === 'after' && winner){
-        content = `<p class="infobox__paragraph">Winner: <strong class="infobox__strong">${winner}</strong></p>`;
+    } else if ( gameStatus === 'finished' ){
+        const buttonHandler = el => {
+            el.addEventListener('click', () => {
+                chessboard.stage.newGame();
+            });
+        }
         content = createElement(
-                    'p', 
+                    'div', 
                     null, 
-                    { class: 'infobox__paragraph' },
+                    {},
                     // children
+                    createElement('p', null, { class: 'infobox__paragraph' }, document.createTextNode('End of game!')),
                     document.createTextNode('Winner: '),
-                    createElement('strong', null, { class: 'infobox__strong' }, document.createTextNode(winner))
+                    createElement('strong', null, { class: 'infobox__strong' }, document.createTextNode(chessboard.status.winner)),
+                    createElement('br'),
+                    createElement('button', buttonHandler, { class: 'infobox__button' }, document.createTextNode('OK'))
                 )
     }
 

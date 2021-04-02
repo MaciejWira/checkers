@@ -14,11 +14,9 @@ export const chessboardSet = [
     [ '', bp, '', bp, '', bp, '', bp],
     [bp, '', bp, '', bp, '', bp, ''],
     emptyRow,
+    [ wp, '', '', '', '', '', '', ''],
     emptyRow,
     emptyRow,
-    emptyRow,
-    [ '', wp, '', wp, '', wp, '', wp],
-    [ wp, '', wp, '', wp, '', wp, '' ],
     ]; 
 
 export const chessboardRange = [ [1,1], [ chessboardSet[0].length, chessboardSet.length ] ];

@@ -5,6 +5,7 @@ import _setActiveFieldRanges from './_setActiveFieldRanges';
 import _filterPossibilities from './_filterPossibilities';
 import render from './render';
 import './chessboard.scss';
+import checkStatus from './checkStatus';
 
 const rowLetterIds = [
     'H','G','F','E','D','C','B','A'
@@ -33,6 +34,7 @@ export default class Chessboard {
         this.status = {
             game: 'before', // before / on / finished
             team: 'white', // white / black
+            winner: '' // white / black
         };
         this.moveRange = []; // possible moves for active field
         this.movePossibilities = []; // fields which can move at a time
@@ -83,3 +85,4 @@ Chessboard.prototype._setActiveFieldRanges = _setActiveFieldRanges;
 // gather ids of fields which can capture at a time
 // according to rule that capturing is obligatory and most captures in streak have precedence
 Chessboard.prototype._filterPossibilities = _filterPossibilities;
+Chessboard.prototype.checkStatus = checkStatus;

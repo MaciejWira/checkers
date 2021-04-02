@@ -11,6 +11,11 @@ export default class Stage {
         document.body.appendChild( this.container );
     }
 
+    newGame(){
+        this.chessboard = new Chessboard( chessboardSet, this );
+        this.render();
+    }
+
     render(){
         if ( this.wrapper ) this.wrapper.remove();
         const teamBoardWhite = new TeamBoard('white', this.chessboard.status.team);
