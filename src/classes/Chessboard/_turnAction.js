@@ -1,5 +1,5 @@
 import Field from '../Field/Field';
-import Figure from './../Figure';
+import Figure from '../Figure/Figure';
 
 const _turnAction = function(id, capturedId){
     if ( capturedId && !this.captureMode){

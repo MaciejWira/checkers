@@ -1,4 +1,4 @@
-import Figure from '../Figure';
+import Figure from '../Figure/Figure';
 import { idFromCoors } from '../../helpers/idFromCoors';
 import Vec from '../Vec';
 import actionType from './actionType';

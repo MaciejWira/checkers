@@ -13,8 +13,7 @@ const render = function(){
         || this.chessboard.lastMove.includes(this.id) 
         ) classNames.push( "chessboard__field--highlighted" );
 
-    const figure = !this.figure ? null 
-                    : createElement('div', null, { class: `chessboard__figure ${this.figure.team} ${this.figure.type}` });
+    const figure = this.figure?.render();
 
     const handler = fieldDom => {
         fieldDom.addEventListener('click', () => {
