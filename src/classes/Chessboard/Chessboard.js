@@ -48,6 +48,8 @@ export default class Chessboard {
         this.history = []; // simplified, for comparission for draws
         this.archive();
         this.drawRepetitions = 3;
+        this.queenRepetitions = 0;
+        this.queenRepetitionsLimit = 20;
         };
 
     startGame(){
@@ -61,7 +63,7 @@ export default class Chessboard {
     }
 
     archive(){
-        const newRound = this.fields
+        const latestTurn = this.fields
                         .map( row => {
                             return row
                                     .map( field => {
@@ -71,10 +73,10 @@ export default class Chessboard {
                         })
                         .reduce((prev, curr) => prev + curr + '-', '');
         let counter = 0;
-        this.history.forEach( round => {
-            if ( round === newRound ) counter++;
+        this.history.forEach( turn => {
+            if ( turn === latestTurn ) counter++;
         });
-        this.history = [ ...this.history, newRound ];
+        this.history = [ ...this.history, latestTurn ];
         if ( counter >= this.drawRepetitions ) this.endGame('draw');
         console.log(counter);
         console.log(this.history);

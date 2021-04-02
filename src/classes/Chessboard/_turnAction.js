@@ -68,6 +68,11 @@ const _turnAction = function(id, capturedId){
         this.captures = [ ...this.captures, capturedId ];
     };
     this.archive();
+    // check queens repetitions
+    const currFigureType = this.getField(id).figure.type;
+    if ( currFigureType === 'queen' && !capturedId ){ // queen's move
+        this.queenRepetitions = this.queenRepetitions + 1
+    } else this.queenRepetitions = 0;
 }
 
 export default _turnAction;

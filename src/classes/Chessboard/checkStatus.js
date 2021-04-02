@@ -9,6 +9,8 @@ const checkStatus = function(){
 
         if ( !this.captureStreaks.length && !this.movePossibilities.length ) this.endGame();
 
+        if ( this.queenRepetitions >= this.queenRepetitionsLimit ) this.endGame('draw');
+
     }
 
 }
