@@ -7,8 +7,9 @@ const render = function(){
     const [ actionType, capture ] = this.actionType( this.chessboard );
 
     if ( actionType ) classNames.push( "chessboard__field--clickable" );
+
     if ( 
-        this.isActiveField
+        this.id === this.chessboard.activeFieldId
         || this.chessboard.lastMove.includes(this.id) 
         ) classNames.push( "chessboard__field--highlighted" );
 
