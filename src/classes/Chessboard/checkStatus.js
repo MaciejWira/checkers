@@ -7,10 +7,7 @@ const checkStatus = function(){
         // 2. Blocked moves
         // then it's game over
 
-        if ( !this.captureStreaks.length && !this.movePossibilities.length ){
-            this.status.winner = this.status.team === 'white' ? 'black' : 'white';
-            this.status.game = 'finished';
-        }
+        if ( !this.captureStreaks.length && !this.movePossibilities.length ) this.endGame();
 
     }
 

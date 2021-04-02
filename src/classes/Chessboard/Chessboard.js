@@ -30,6 +30,7 @@ export default class Chessboard {
                     )
             })
         });
+        console.log(this.fields);
         this.activeFieldId = null;
         this.status = {
             game: 'before', // before / on / finished
@@ -44,12 +45,40 @@ export default class Chessboard {
         if ( this.status.game === 'on' ) this._filterPossibilities();
         this.captureMode = false;
         this.captures = []; // ids of captured figures during multi capture
+        this.history = []; // simplified, for comparission for draws
+        this.archive();
+        this.drawRepetitions = 3;
         };
 
     startGame(){
         this.status.game = 'on';
         this.status.team = 'white';
     };
+
+    endGame(message){
+        this.status.game = 'finished';
+        this.status.winner = message === 'draw' ? '' : ( this.status.team === 'white' ? 'black' : 'white' );
+    }
+
+    archive(){
+        const newRound = this.fields
+                        .map( row => {
+                            return row
+                                    .map( field => {
+                                        return field.figure ? field.figure.team + '-' + field.figure.type : '0';
+                                    })
+                                    .reduce((prev, curr) => prev + curr + '--', '')
+                        })
+                        .reduce((prev, curr) => prev + curr + '-', '');
+        let counter = 0;
+        this.history.forEach( round => {
+            if ( round === newRound ) counter++;
+        });
+        this.history = [ ...this.history, newRound ];
+        if ( counter >= this.drawRepetitions ) this.endGame('draw');
+        console.log(counter);
+        console.log(this.history);
+    }
 
     checkCaptureRange(id){
         for ( const streak of this.captureStreaksActive ){

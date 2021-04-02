@@ -66,7 +66,8 @@ const _turnAction = function(id, capturedId){
     } else {
         this.activeFieldId = id;
         this.captures = [ ...this.captures, capturedId ];
-    }
+    };
+    this.archive();
 }
 
 export default _turnAction;
