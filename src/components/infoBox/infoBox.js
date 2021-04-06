@@ -1,5 +1,6 @@
-import './infoBox.scss';
 import createElement from './../../functions/createElement';
+import styles from './infoBox.scss';
+const { container, content, button, strong, paragraph } = styles;
 
 const infoBox = chessboard => {
 
@@ -7,7 +8,7 @@ const infoBox = chessboard => {
 
     if ( gameStatus === 'on' ) return null;
 
-    let content = null;
+    let _content = null;
 
     if ( gameStatus === 'before' ){
         const buttonHandler = el => {
@@ -16,7 +17,7 @@ const infoBox = chessboard => {
                 chessboard.updateStatus();
             });
         }
-        content = createElement('button', buttonHandler, { class: 'infobox__button' }, document.createTextNode('Start'))
+        _content = createElement('button', buttonHandler, { class: button }, document.createTextNode('Start'))
     } else if ( gameStatus === 'finished' ){
 
         const buttonHandler = el => {
@@ -27,28 +28,28 @@ const infoBox = chessboard => {
 
         const core = chessboard.status.winner ? [ 
             document.createTextNode('Winner: '),
-            createElement('strong', null, { class: 'infobox__strong' }, document.createTextNode(chessboard.status.winner))
+            createElement('strong', null, { class: strong }, document.createTextNode(chessboard.status.winner))
         ] : [
             document.createTextNode('Draw'),
         ];
 
-        content = createElement(
+        _content = createElement(
                     'div', 
                     null, 
                     {},
                     // children
-                    createElement('p', null, { class: 'infobox__paragraph' }, document.createTextNode('End of game!')),
+                    createElement('p', null, { class: paragraph }, document.createTextNode('End of game!')),
                     ...core,
                     createElement('br'),
-                    createElement('button', buttonHandler, { class: 'infobox__button' }, document.createTextNode('OK'))
+                    createElement('button', buttonHandler, { class: button }, document.createTextNode('OK'))
                 )
     }
 
     return createElement(
                 'div', 
                 null, 
-                { class: 'infobox' },
-                createElement('div', null, { class: 'infobox__content' }, content)
+                { class: container },
+                createElement('div', null, { class: content }, _content)
             );
 
 };

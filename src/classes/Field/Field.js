@@ -3,7 +3,6 @@ import { idFromCoors } from '../../helpers/idFromCoors';
 import Vec from '../Vec';
 import actionType from './actionType';
 import render from './render';
-import './field.scss';
 
 export default class Field {
 

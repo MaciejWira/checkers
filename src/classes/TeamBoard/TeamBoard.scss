@@ -1,21 +1,20 @@
-.teamboard {
+@import 'mixins/breakpoints';
+@import 'functions/rem';
+
+.container {
     display: flex;
-    justify-content: space-between;
+}
 
-    &__heading {
-        text-align: center;
-        text-transform: uppercase;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        border-bottom: solid 4px transparent;
-        line-height: 1.75;
-    }
+.heading {
+    text-align: center;
+    text-transform: uppercase;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    border-bottom: solid 4px transparent;
+    line-height: 1.75;
+    font-size: rem(20);
+}
 
-    &--active {
-
-        .teamboard__heading {
-            border-color: red;
-        }
-    }
-
+.active {
+    border-color: red;
 }

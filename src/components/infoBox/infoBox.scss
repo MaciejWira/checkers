@@ -1,6 +1,6 @@
-@import '../../styles/vars';
+@import 'abstractions/vars';
 
-.infobox {
+.container {
     position: absolute;
     top: 0;
     left: 0;
@@ -11,22 +11,30 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
 
-    &__content {
-        background-color: white;
-        padding: 10px 30px;
-    }
+.content {
+    background-color: white;
+    padding: 10px 30px;
+}
 
-    &__button {
-        border: none;
-        padding: 10px 20px;
-        color: $color-dark;
-        font-size: 20px;
-        font-weight: 600;
-        cursor: pointer;
+.paragraph {
+    color: blue
+}
 
-        &:hover {
-            background-color: $color-light;
-        }
+strong {
+    font-weight: 900;
+}
+
+.button {
+    border: none;
+    padding: 10px 20px;
+    color: $color-dark;
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $color-light;
     }
 }

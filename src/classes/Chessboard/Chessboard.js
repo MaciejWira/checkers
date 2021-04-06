@@ -4,7 +4,6 @@ import _turnAction from './_turnAction';
 import _setActiveFieldRanges from './_setActiveFieldRanges';
 import _filterPossibilities from './_filterPossibilities';
 import render from './render';
-import './chessboard.scss';
 import checkStatus from './checkStatus';
 
 const rowLetterIds = [

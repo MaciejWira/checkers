@@ -1,16 +1,20 @@
-.figure {
+.container {
     width: 35px;
     height: 35px;
+}
 
-    &.white {
-        background-color: white;
-    }
+.white {
+    background-color: white;
+}
 
-    &.black {
-        background-color: black;
-    }
+.black {
+    background-color: black;
+}
 
-    &.pawn {
-        border-radius: 50%;
-    }
+.pawn {
+    border-radius: 50%;
+}
+
+.queen {
+    border-radius: 25%;
 }

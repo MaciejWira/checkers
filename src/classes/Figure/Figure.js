@@ -2,7 +2,7 @@ import _rangeFields from './_rangeFields';
 import filterRange from './filterRange';
 import _createCaptureNodes from './_createCaptureNodes';
 import createElement from './../../functions/createElement';
-import './figure.scss';
+import styles from './figure.scss';
 
 export default class Figure {
 
@@ -25,7 +25,7 @@ export default class Figure {
     }
 
     render(){
-        return createElement('div', null, { class: `figure ${this.team} ${this.type}`})
+        return createElement('div', null, { class: `${styles.container} ${styles[this.team]} ${styles[this.type]}`})
     }
 
 }

@@ -1,17 +1,19 @@
 import createElement from '../../functions/createElement';
+import styles from './field.scss';
+const { container, highlighted, clickable } = styles;
 
 const render = function(){
 
-    const classNames = [ "field", `field--${this.type}` ];
+    const classNames = [ container, styles[this.type] ];
 
     const [ actionType, capture ] = this.actionType( this.chessboard );
 
-    if ( actionType ) classNames.push( "field--clickable" );
+    if ( actionType ) classNames.push( clickable );
 
     if ( 
         this.id === this.chessboard.activeFieldId
         || this.chessboard.lastMove.includes(this.id) 
-        ) classNames.push( "field--highlighted" );
+        ) classNames.push( highlighted );
 
     const figure = this.figure?.render();
 
