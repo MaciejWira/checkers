@@ -1,5 +1,5 @@
 import Figure from '../Figure/Figure';
-import { idFromCoors } from '../../helpers/idFromCoors';
+import { idFromCoors } from 'Utils/idFromCoors';
 import Vec from '../Vec';
 import actionType from './actionType';
 import render from './render';

@@ -1,8 +1,8 @@
 import _rangeFields from './_rangeFields';
 import filterRange from './filterRange';
 import _createCaptureNodes from './_createCaptureNodes';
-import createElement from './../../functions/createElement';
-import styles from './figure.scss';
+import createElement from 'Utils/createElement';
+import styles from './Figure.scss';
 
 export default class Figure {
 

@@ -1,6 +1,6 @@
 import styles from './TeamBoard.scss';
 const { container, active, heading } = styles;
-import createElement from './../../functions/createElement';
+import createElement from 'Utils/createElement';
 
 export default class TeamBoard {
 

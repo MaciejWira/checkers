@@ -1,4 +1,4 @@
-import { idFromCoors } from './../../helpers/idFromCoors';
+import { idFromCoors } from 'Utils/idFromCoors';
 
 const filterRange = function( chessboard, startFieldId = null, captureStreaksSearch = false, capturedFields = [] ){
 

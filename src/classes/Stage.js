@@ -1,4 +1,4 @@
-import createElement from "../functions/createElement";
+import createElement from "Utils/createElement";
 import Chessboard from './Chessboard/Chessboard';
 import { chessboardSet } from './Chessboard/chessboardSettings';
 import TeamBoard from './TeamBoard/TeamBoard';
@@ -23,7 +23,7 @@ export default class Stage {
         const wrapper = createElement(
                             'div', 
                             null, 
-                            { class: 'stage'}, 
+                            {}, 
                             // children
                             teamBoardBlack.render(this.chessboard.status.team),
                             this.chessboard.render(),

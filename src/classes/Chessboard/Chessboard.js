@@ -1,4 +1,4 @@
-import Field from '../Field/Field';
+import Field from 'Classes/Field/Field';
 import updateStatus from './updateStatus';
 import _turnAction from './_turnAction';
 import _setActiveFieldRanges from './_setActiveFieldRanges';

@@ -1,5 +1,5 @@
-import { nodesToStreaks } from "../../functions/streakToArr";
-import { biggestLength } from '../../functions/biggestLength';
+import { nodesToStreaks } from "Utils/streakToArr";
+import { biggestLength } from 'Utils/biggestLength';
 
 const _filterPossibilities = function(){
     const captureStreaks = [];

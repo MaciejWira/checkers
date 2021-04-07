@@ -1,8 +1,8 @@
-import createElement from './../../functions/createElement';
-import styles from './infoBox.scss';
+import createElement from 'Utils/createElement';
+import styles from './InfoBox.scss';
 const { container, content, button, strong, paragraph } = styles;
 
-const infoBox = chessboard => {
+const InfoBox = chessboard => {
 
     const gameStatus = chessboard.status.game;
 
@@ -54,4 +54,4 @@ const infoBox = chessboard => {
 
 };
 
-export default infoBox;
+export default InfoBox;

@@ -1,6 +1,6 @@
-import createElement from '../../functions/createElement';
-import infoBox from './../../components/infoBox/infoBox';
-import styles from './chessboard.scss';
+import createElement from 'Utils/createElement';
+import InfoBox from 'Components/InfoBox/InfoBox';
+import styles from './Chessboard.scss';
 const { container, row: rowClass } = styles;
 
 const render = function(){
@@ -10,8 +10,8 @@ const render = function(){
         return createElement('div', null, { class: rowClass }, ..._fields);
     });
 
-    const infoBoxDOM = infoBox(this);
-    return createElement('div', null, { class: container }, ...rows, infoBoxDOM);
+    const InfoBoxDOM = InfoBox(this);
+    return createElement('div', null, { class: container }, ...rows, InfoBoxDOM);
 }
 
 export default render;

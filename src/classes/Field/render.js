@@ -1,5 +1,5 @@
-import createElement from '../../functions/createElement';
-import styles from './field.scss';
+import createElement from 'Utils/createElement';
+import styles from './Field.scss';
 const { container, highlighted, clickable } = styles;
 
 const render = function(){

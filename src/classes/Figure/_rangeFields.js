@@ -1,6 +1,6 @@
-import { chessboardRange } from '../Chessboard/chessboardSettings';
-import { allDirections } from './../../helpers/allDirections';
-import { idFromCoors } from './../../helpers/idFromCoors';
+import { chessboardRange } from 'Classes/Chessboard/chessboardSettings';
+import { allDirections } from 'Utils/allDirections';
+import { idFromCoors } from 'Utils/idFromCoors';
 
 const _rangeFields = function(distance){
     const _fields = [];
