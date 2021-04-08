@@ -6,8 +6,8 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "build": "webpack",
-    "start": "webpack serve --open"
+    "build": "webpack --mode=production",
+    "start": "webpack serve --open --mode=development"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",

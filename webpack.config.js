@@ -3,7 +3,6 @@ const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    mode: 'development',
     entry: './src/main.js',
     output: {
         filename: 'bundle.js',
@@ -17,7 +16,7 @@ module.exports = {
     },
     plugins: [
         new HTMLWebpackPlugin({
-            title: 'Chess game'
+            title: 'Checkers'
         }),
         new MiniCSSExtractPlugin()
     ],
