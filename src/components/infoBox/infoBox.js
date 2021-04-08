@@ -39,7 +39,7 @@ const InfoBox = chessboard => {
                     {},
                     // children
                     createElement('p', null, { class: paragraph }, document.createTextNode('End of game!')),
-                    ...core,
+                    createElement('p', null, { class: paragraph }, ...core),
                     createElement('br'),
                     createElement('button', buttonHandler, { class: button }, document.createTextNode('OK'))
                 )

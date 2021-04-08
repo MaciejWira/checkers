@@ -1,7 +1,8 @@
 import createElement from "Utils/createElement";
-import Chessboard from './Chessboard/Chessboard';
-import { chessboardSet } from './Chessboard/chessboardSettings';
-import TeamBoard from './TeamBoard/TeamBoard';
+import Chessboard from 'Classes/Chessboard/Chessboard';
+import { chessboardSet } from 'Classes/Chessboard/chessboardSettings';
+import TeamBoard from 'Classes/TeamBoard/TeamBoard';
+import styles from './Stage.scss';
 
 export default class Stage {
 
@@ -23,7 +24,7 @@ export default class Stage {
         const wrapper = createElement(
                             'div', 
                             null, 
-                            {}, 
+                            { class: styles.container }, 
                             // children
                             teamBoardBlack.render(this.chessboard.status.team),
                             this.chessboard.render(),

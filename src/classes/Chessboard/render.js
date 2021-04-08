@@ -11,7 +11,12 @@ const render = function(){
     });
 
     const InfoBoxDOM = InfoBox(this);
-    return createElement('div', null, { class: container }, ...rows, InfoBoxDOM);
+    return createElement(
+            'div', 
+            null, 
+            { class: container }, 
+            ...rows, InfoBoxDOM
+        );
 }
 
 export default render;

@@ -1,14 +1,25 @@
+@import 'functions/rem';
+@import 'mixins/breakpoints';
+
 .container {
-    width: 35px;
-    height: 35px;
+    position: relative;
+    width: 65%;
+    height: 65%;
 }
 
 .white {
     background-color: white;
+
+    .label {
+        color: black
+    }
 }
 
 .black {
     background-color: black;
+    .label {
+        color: white
+    }
 }
 
 .pawn {
@@ -17,4 +28,15 @@
 
 .queen {
     border-radius: 25%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.label {
+    font-size: rem(28);
+    font-weight: 600;
+    @include bp(sm){
+        font-size: rem(40);
+    }
 }

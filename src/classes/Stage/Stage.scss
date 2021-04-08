@@ -1,0 +1,8 @@
+@import 'functions/rem';
+
+.container {
+    position: relative;
+    padding: rem(10);
+    width: 100%;
+    padding-bottom: 100%;
+}

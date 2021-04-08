@@ -25,7 +25,17 @@ export default class Figure {
     }
 
     render(){
-        return createElement('div', null, { class: `${styles.container} ${styles[this.team]} ${styles[this.type]}`})
+        return createElement(
+            'div', 
+            null, 
+            { class: `${styles.container} ${styles[this.team]} ${styles[this.type]}`},
+            this.type !== 'queen' ? null : createElement(
+                'span',
+                null,
+                { class: styles.label },
+                document.createTextNode('Q')
+            )
+        )
     }
 
 }

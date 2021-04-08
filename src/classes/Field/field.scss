@@ -1,9 +1,24 @@
 @import 'abstractions/vars';
+@import 'functions/rem';
 
 .container {
-    width: 60px;
-    height: 60px;
-    box-sizing: border-box;
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.content {
+    padding-bottom: 100%;
+}
+
+.contentWrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -18,7 +33,7 @@
 }
 
 .highlighted {
-    border: solid 3px red;
+    box-shadow: 0 0 0 rem(3) $color-light-2 inset;
 }
 
 .clickable {

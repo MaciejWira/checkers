@@ -1,6 +1,6 @@
 import createElement from 'Utils/createElement';
 import styles from './Field.scss';
-const { container, highlighted, clickable } = styles;
+const { container, content, contentWrapper, highlighted, clickable } = styles;
 
 const render = function(){
 
@@ -27,7 +27,22 @@ const render = function(){
         });
     };
 
-    return createElement('div', actionType ? handler : null, { class: classNames.join(" ") }, figure);
+    return createElement(
+        'div', 
+        actionType ? handler : null, 
+        { class: classNames.join(" ") }, 
+        createElement(
+            'div',
+            null,
+            { class: content },
+            createElement(
+                'div',
+                null,
+                { class: contentWrapper },
+                figure
+            )
+        )
+    );
 }
 
 export default render;

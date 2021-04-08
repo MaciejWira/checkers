@@ -1,8 +1,10 @@
 @import 'mixins/breakpoints';
 @import 'functions/rem';
+@import 'abstractions/vars';
 
 .container {
     display: flex;
+    justify-content: center;
 }
 
 .heading {
@@ -16,5 +18,5 @@
 }
 
 .active {
-    border-color: red;
+    border-color: $color-dark;
 }

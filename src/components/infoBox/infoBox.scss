@@ -15,26 +15,30 @@
 
 .content {
     background-color: white;
-    padding: 10px 30px;
+    padding: 30px 30px;
+    text-align: center;
 }
 
 .paragraph {
-    color: blue
+    color: $color-dark;
+    line-height: 1.35;
 }
 
-strong {
+.strong {
     font-weight: 900;
 }
 
 .button {
     border: none;
     padding: 10px 20px;
-    color: $color-dark;
+    color: white;
     font-size: 20px;
     font-weight: 600;
     cursor: pointer;
+    background-color: $color-dark;
 
     &:hover {
         background-color: $color-light;
+        color: $color-dark
     }
 }
